@@ -327,7 +327,7 @@ public class Outpost
 							}
 							if (grid[i*size+j].ownerlist.get(0).x==1)  {
 
-								g2.setPaint(Color.MAGENTA);
+								g2.setPaint(Color.GREEN.darker());
 								g2.fill(new Rectangle2D.Double(ox+x_in/4+x_in*i,oy+x_in/4+y_in*j,x_in/2,y_in/2));
 							}
 							if (grid[i*size+j].ownerlist.get(0).x==2)  {
@@ -360,7 +360,7 @@ public class Outpost
 			if (id == 0) 
 				g2.setPaint(Color.WHITE);
 			else if (id == 1)
-				g2.setPaint(Color.MAGENTA);
+				g2.setPaint(Color.GREEN.darker());
 			else if (id == 2)
 				g2.setPaint(Color.BLACK);
 			else if (id == 3)
