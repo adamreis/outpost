@@ -32,57 +32,37 @@ public class Player extends outpost.sim.Player {
 						randomizeTheta();
 				}
 
-				ArrayList<movePair> nextlist = new ArrayList<movePair>();
-
 				for (int i = 0; i < gridin.length; i++) {
 						grid[i] = new Point(gridin[i]);
 				}
 
+				ArrayList<movePair> nextList = new ArrayList<movePair>();
 				ArrayList<Pair> outpostList = king_outpostlist.get(this.id);
 
-				for (int j = 0; j < outpostList.size() - 1; j++) {
+				int boundingJ = (outpostList.size() > noutpost)? outpostList.size() - 1 : outpostList.size();
+
+				for (int j = 0; j < boundingJ; j++) {
 						ArrayList<Pair> positions = surround(outpostList.get(j));
 
-						boolean foundMovePair = false;
-						while (!foundMovePair) {
+						movePair move;
+						while (move == null) {
 								if (theta[j] < positions.size()) {
 										Pair pair = positions.get(theta[j]);
 										if (isPairInBounds(pair) && !pairToPoint(pair).water) {
-												movePair next = new movePair(j, pair, false);
-												nextlist.add(next);
-												foundMovePair = true;
-												break;
+												move = new movePair(j, pair, false);
 										}
 								}
 
 								theta[j] = random.nextInt(positions.size());
 						}
+						nextList.add(move);
 				}
 
 				if (outpostList.size() > noutpost) {
-						movePair mpr = new movePair(outpostList.size() - 1, new Pair(0,0), true);
-						nextlist.add(mpr);
-				}
-				else {
-						ArrayList<Pair> positions = surround(outpostList.get(outpostList.size()-1))
-
-						boolean foundMovePair = false;
-						while (!foundMovePair) {
-								if (theta[0]<positions.size()) {
-										Pair pair = positions.get(theta[0]);
-										if (isPairInBounds(pair) && !pairToPoint(pair).water) {
-												movePair next = new movePair(outpostList.size() - 1, positions.get(theta[0]), false);
-												nextlist.add(next);
-												foundMovePair = true;
-												break;
-										}
-								}
-
-								theta[0] = random.nextInt(positions.size());
-						}
+						nextList.add(new movePair(outpostList.size() - 1, new Pair(0,0), true));
 				}
 
-				return nextlist;
+				return nextList;
 		}
 
 		private randomizeTheta() {
