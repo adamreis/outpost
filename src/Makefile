@@ -1,0 +1,17 @@
+MAP=map0
+PLAYER0=group1
+PLAYER1=group1
+PLAYER2=group1
+PLAYER3=group1
+R=10
+L=4
+W=1
+GUI=false
+ROUNDS=10000
+
+run:
+	java outpost.sim.Outpost $(MAP) $(R) $(L) $(W) $(GUI) $(PLAYER0) $(PLAYER1) $(PLAYER2) $(PLAYER3) $(ROUNDS)
+
+compile:
+	javac outpost/sim/Outpost.java
+

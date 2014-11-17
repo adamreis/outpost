@@ -16,13 +16,22 @@ public class Player extends outpost.sim.Player {
 
 		private int turn;
 
+		public Player(int id) {
+			super(id);
+		}
+
 		public void init() {
 				theta = new int[SIZE];
-				grid = new Point[SIZE * SIZE]
+				grid = new Point[SIZE * SIZE];
 
 				randomizeTheta();
 
 				turn = 0;
+		}
+
+		public int delete(ArrayList<ArrayList<Pair>> king_outpostlist, Point[] gridin) {
+				int del = random.nextInt(king_outpostlist.get(id).size());
+				return del;
 		}
 
 		public ArrayList<movePair> move(ArrayList<ArrayList<Pair>> king_outpostlist, int noutpost, Point[] gridin){
@@ -44,7 +53,7 @@ public class Player extends outpost.sim.Player {
 				for (int j = 0; j < boundingJ; j++) {
 						ArrayList<Pair> positions = surround(outpostList.get(j));
 
-						movePair move;
+						movePair move = null;
 						while (move == null) {
 								if (theta[j] < positions.size()) {
 										Pair pair = positions.get(theta[j]);
@@ -65,7 +74,7 @@ public class Player extends outpost.sim.Player {
 				return nextList;
 		}
 
-		private randomizeTheta() {
+		private void randomizeTheta() {
 				for (int i = 0; i < SIZE; i++) {
 						theta[i] = random.nextInt(4);
 				}
@@ -90,11 +99,11 @@ public class Player extends outpost.sim.Player {
 				return pairList;
 		}
 
-		static Point pairToPoint(Pair pr) {
+		private Point pairToPoint(Pair pr) {
 			return grid[pr.x*SIZE+pr.y];
 		}
 
-		static Pair pointToPair(Point pt) {
+		static private Pair pointToPair(Point pt) {
 			return new Pair(pt.x, pt.y);
 		}
 }
