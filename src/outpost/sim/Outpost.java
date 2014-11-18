@@ -415,7 +415,7 @@ public class Outpost
 				}
 			}
 		}
-		if (mindist < r_distance){
+		if (mindist <= r_distance){
 			for (int j =0 ; j<king_outpostlist.size(); j++) {
 				for (int f =0; f<king_outpostlist.get(j).size(); f++) {
 					double d = distance(PairtoPoint(king_outpostlist.get(j).get(f)), pr);
@@ -725,7 +725,7 @@ public class Outpost
 					king_outpostlist.get(d).remove(removedid);
 					System.out.printf("player %d delete outpost %d\n", d, removedid);
 				}
-				nextlist = players[d].move(king_outpostlist, grid);
+				nextlist = players[d].move(king_outpostlist, grid, r_distance, L, W, MAX_TICKS);
 				for (int i=0; i<nextlist.size(); i++) {
 					//movePair next = new movePair();
 					//next = nextlist.get(i);

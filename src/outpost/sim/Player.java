@@ -13,7 +13,7 @@ public abstract class Player {
     
     public abstract void init() ;
     
-    public abstract ArrayList<movePair> move(ArrayList<ArrayList<Pair>> king_outpostlist, Point[] grid); // positions of all the outpost, playerid
+    public abstract ArrayList<movePair> move(ArrayList<ArrayList<Pair>> king_outpostlist, Point[] grid, int r, int L, int W, int T); // positions of all the outpost, playerid
 
     public abstract int delete(ArrayList<ArrayList<Pair>> king_outpostlist, Point[] gridin);
 }

@@ -4,8 +4,8 @@ import outpost.sim.movePair;
 
 public class movePair {
 
-	public int id;
-    public Pair pr;
+	int id;
+    Pair pr;
     //boolean delete;
 
     public movePair() {  }
