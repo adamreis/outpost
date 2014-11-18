@@ -56,6 +56,11 @@ public class Outpost
 	static int[] noutpost = new int[4];
 	static int nrounds;
 
+	static String group0 = null;
+	static String group1 = null;
+	static String group2 = null;
+	static String group3 = null;
+	
 	static ArrayList<ArrayList<Pair>> king_outpostlist = new ArrayList<ArrayList<Pair>>();
 
 	// list files below a certain directory
@@ -190,21 +195,36 @@ public class Outpost
 */
 			if (tick > nrounds) {
 				calculateres();
-				
-					label.setText("Player 0"+" control water "+water[0]+", land "+soil[0]);
-					label.setVisible(true);
-					label0.setText("Player 1"+" control water "+water[1]+", land "+soil[1]);
-					label0.setVisible(true);
-					label1.setText("Player 2"+" control water "+water[2]+", land "+soil[2]);
-					label1.setVisible(true);
-					label2.setText("Player 3"+" control water "+water[3]+", land "+soil[3]);
-					label2.setVisible(true);
+				label.setText(group0+" control water "+water[0]+", land "+soil[0]);
+				label.setForeground(Color.blue);
+				label.setVisible(true);
+				label0.setText(group1+" control water "+water[1]+", land "+soil[1]);
+				label0.setForeground(Color.GREEN.darker());
+				label0.setVisible(true);
+				label1.setText(group2+" control water "+water[2]+", land "+soil[2]);
+				label1.setForeground(Color.RED);
+				label1.setVisible(true);
+				label2.setText(group3+" control water "+water[3]+", land "+soil[3]);
+				label2.setForeground(Color.BLACK);
+				label2.setVisible(true);
 					//System.err.printf("Player %d control water %f, land %f\n", i, water[i], soil[i]);
 				
 				return false;
 			}
 			else {
 				playStep();
+				label.setText(group0+" control water "+water[0]+", land "+soil[0]);
+				label.setForeground(Color.BLUE);
+				label.setVisible(true);
+				label0.setText(group1+" control water "+water[1]+", land "+soil[1]);
+				label0.setForeground(Color.GREEN.darker());
+				label0.setVisible(true);
+				label1.setText(group2+" control water "+water[2]+", land "+soil[2]);
+				label1.setForeground(Color.RED);
+				label1.setVisible(true);
+				label2.setText(group3+" control water "+water[3]+", land "+soil[3]);
+				label2.setForeground(Color.BLACK);
+				label2.setVisible(true);
 				return true;
 			}
 		}
@@ -556,7 +576,7 @@ public class Outpost
 		for (int i = king_outpostlist.get(id).size() - 1; i >= 0; --i) {
 			Pair p = king_outpostlist.get(id).get(i);
 			if (!vst[p.x][p.y]) {
-				System.out.printf("remove player %d's outpost (%d, %d)\n", id, p.x, p.y);
+				System.out.printf("player %d's outpost (%d, %d) cannot find a supplyline back \n", id, p.x, p.y);
 				king_outpostlist.get(id).remove(i);
 			}
 		}
@@ -700,10 +720,15 @@ public class Outpost
 		for (int d=0; d<4; d++) {
 			try {
 				ArrayList<movePair> nextlist = new ArrayList<movePair>();
-				nextlist = players[d].move(king_outpostlist, noutpost[d], grid);
+				if (king_outpostlist.get(d).size()>noutpost[d]) {
+					int removedid = players[d].delete(king_outpostlist, grid);
+					king_outpostlist.get(d).remove(removedid);
+					System.out.printf("player %d delete outpost %d\n", d, removedid);
+				}
+				nextlist = players[d].move(king_outpostlist, grid);
 				for (int i=0; i<nextlist.size(); i++) {
-					movePair next = new movePair();
-					next = nextlist.get(i);
+					//movePair next = new movePair();
+					//next = nextlist.get(i);
 					
 					validateMove(nextlist, d);
 					
@@ -804,10 +829,6 @@ public class Outpost
 	{
 		// game parameters
 		String map = null;
-		String group0 = null;
-		String group1 = null;
-		String group2 = null;
-		String group3 = null;
 
 
 		if (args.length > 0)

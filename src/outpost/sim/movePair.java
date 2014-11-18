@@ -6,17 +6,17 @@ public class movePair {
 
 	int id;
     Pair pr;
-    boolean delete;
+    //boolean delete;
 
     public movePair() {  }
 
-    public movePair(int id_in, Pair pr_in, boolean deletein) {
+    public movePair(int id_in, Pair pr_in) {
         this.id = id_in;
         this.pr = pr_in;
-        this.delete = deletein;
+      //  this.delete = deletein;
     }
     
     public void printmovePair() {
-    	System.out.printf("(%d, %b, (%d, %d))", id, delete, pr.x, pr.y);
+    	System.out.printf("(%d, (%d, %d))", id, pr.x, pr.y);
     }
 }

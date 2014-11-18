@@ -34,13 +34,13 @@ public class Player extends outpost.sim.Player {
 
     
     public int delete(ArrayList<ArrayList<Pair>> king_outpostlist, Point[] gridin) {
-    	System.out.printf("haha, we are trying to delete a outpost for player %d\n", this.id);
+    	//System.out.printf("haha, we are trying to delete a outpost for player %d\n", this.id);
     	int del = random.nextInt(king_outpostlist.get(id).size());
     	return del;
     }
     
 	//public movePair move(ArrayList<ArrayList<Pair>> king_outpostlist, int noutpost, Point[] grid) {
-    public ArrayList<movePair> move(ArrayList<ArrayList<Pair>> king_outpostlist, int noutpost, Point[] gridin){
+    public ArrayList<movePair> move(ArrayList<ArrayList<Pair>> king_outpostlist, Point[] gridin){
     	counter = counter+1;
     	if (counter % 10 == 0) {
     		for (int i=0; i<100; i++) {
@@ -67,7 +67,7 @@ public class Player extends outpost.sim.Player {
         			if (positions.get(theta[j]).x>=0 && positions.get(theta[j]).y>=0 && positions.get(theta[j]).x<size && positions.get(theta[j]).y<size) {
         		
         				if (!PairtoPoint(positions.get(theta[j])).water) {
-    			movePair next = new movePair(j, positions.get(theta[j]), false);
+    			movePair next = new movePair(j, positions.get(theta[j]));
     			nextlist.add(next);
     			//next.printmovePair();
     			gotit = true;
@@ -79,12 +79,12 @@ public class Player extends outpost.sim.Player {
     		theta[j] = random.nextInt(positions.size());
     		}
     	}
-    	if (prarr.size()>noutpost) {
-			movePair mpr = new movePair(prarr.size()-1, new Pair(0,0), true);
+    	/*if (prarr.size()>noutpost) {
+			movePair mpr = new movePair(prarr.size()-1, new Pair(0,0));
 			nextlist.add(mpr);
 			//mpr.printmovePair();
-		}
-    	else {
+		}*/
+    	//else {
     		ArrayList<Pair> positions = new ArrayList<Pair>();
     		positions = surround(prarr.get(prarr.size()-1));
     		boolean gotit=false;
@@ -96,7 +96,7 @@ public class Player extends outpost.sim.Player {
     			if (positions.get(theta[0]).x>=0 && positions.get(theta[0]).y>=0 && positions.get(theta[0]).x<size && positions.get(theta[0]).y<size) {
     		
     				if (!PairtoPoint(positions.get(theta[0])).water) {
-    			movePair next = new movePair(prarr.size()-1, positions.get(theta[0]), false);
+    			movePair next = new movePair(prarr.size()-1, positions.get(theta[0]));
     			nextlist.add(next);
     			//next.printmovePair();
     			gotit = true;
@@ -108,7 +108,7 @@ public class Player extends outpost.sim.Player {
     		theta[0] = random.nextInt(positions.size());
     		}
     		
-    	}
+    	//}
     	
     	
     	return nextlist;
