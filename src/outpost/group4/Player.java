@@ -37,7 +37,15 @@ public class Player extends outpost.sim.Player {
 		public void init() { }
 
 		public int delete(ArrayList<ArrayList<Pair>> outpostList, Point[] grid) {
-			int del = random.nextInt(outpostList.get(id).size());
+			ArrayList<Post> posts = Conversions.postsFromPairs(outpostList.get(this.id));
+
+			Post nearestPost = (Post) this.baseLoc.nearestLocation(posts);
+			int del = posts.indexOf(nearestPost);
+
+			System.out.println("DEL INDEX: " + del);
+
+			if (del < 0) del = random.nextInt(outpostList.get(id).size());
+
 			return del;
 		}
 
@@ -55,7 +63,6 @@ public class Player extends outpost.sim.Player {
 
 
       turn += 1;
-      System.out.printf("turn: %d, newPosts size: %d\n", turn, newPosts.size());
 
       return Conversions.movePairsFromPosts(newPosts);
 		}

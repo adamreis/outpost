@@ -70,4 +70,19 @@ public class Location {
 
     	return false;
     }
+
+    public Location nearestLocation(ArrayList<? extends Location> locations) {
+      Location nearestLocation = null;
+      double minDist = Double.POSITIVE_INFINITY;
+
+      for (Location location : locations) {
+        double dist = distanceTo(location);
+        if (dist < minDist) {
+          minDist = dist;
+          nearestLocation = location;
+        }
+      }
+
+      return nearestLocation;
+    }
 }

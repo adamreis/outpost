@@ -4,8 +4,8 @@ import java.util.*;
 
 public class Strategy {
 
-    ArrayList<Post> posts;    
-    
+    ArrayList<Post> posts;
+
     public Strategy(ArrayList<Post> initPosts) {
       posts = initPosts;
     }
@@ -13,7 +13,7 @@ public class Strategy {
     public ArrayList<Post> move() {
       ArrayList<Post> newPosts = new ArrayList<Post>();
       GridSquare[][] gridSquares = Player.gridSquares;
-  
+
       for (Post p : posts) {
         Post newPost = p;
 
@@ -22,10 +22,10 @@ public class Strategy {
         } else {
           newPost = defensiveMove(p);
         }
-         
+
         newPosts.add(newPost);
-      } 
-    
+      }
+
       return newPosts;
     }
 
@@ -38,7 +38,7 @@ public class Strategy {
         if (nearestPost.equals(p)) {
           newPost = p.preferredAdjacency();
         } else {
-          newPost = p.moveMaximizingDistanceFrom(nearestPost); 
+          newPost = p.moveMaximizingDistanceFrom(nearestPost);
         }
       }
       else {
@@ -47,11 +47,11 @@ public class Strategy {
       }
 
       if (newPost == null) newPost = p;
-      return newPost;         
+      return newPost;
     }
 
     public Post defensiveMove(Post p) {
-      Post myAgressivePartner = posts.get(p.id - 1);
+      Post myAgressivePartner = (p.id > 0)? posts.get(p.id - 1) : posts.get(p.id + 1);
       GridSquare water = myAgressivePartner.nearestWater();
       Post newPost = p.moveMinimizingDistanceFrom(water);
       if (newPost == null) newPost = p;

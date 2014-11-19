@@ -49,11 +49,11 @@ public class Post extends Location {
 	}
 
   public Post preferredAdjacency() {
-    ArrayList<Post> cells = adjacentCells(); 
+    ArrayList<Post> cells = adjacentCells();
     int preferredIndex = this.id % cells.size();
     return cells.get(preferredIndex);
   }
-  
+
   public boolean validatePost(Post post) {
     int size = Player.parameters.size;
     GridSquare[][] gridSquares = Player.gridSquares;
@@ -63,10 +63,10 @@ public class Post extends Location {
       return false;
     // check if post is on a water square
     if (gridSquares[post.x][post.y].water)
-      return false;  
+      return false;
 
     return true;
-  } 
+  }
 
 	public ArrayList<Post> postsUnderInfluence(ArrayList<Post> posts) {
 		ArrayList<Post> postsUnderInfluence = new ArrayList<Post>();
@@ -87,28 +87,17 @@ public class Post extends Location {
 	}
 
 	public Post nearestPost(ArrayList<Post> posts) {
-		Post nearestPost = null;
-		double minDist = Double.POSITIVE_INFINITY;
-
-		for (Post post : posts) {
-			double dist = distanceTo(post);
-			if (dist < minDist) {
-				minDist = dist;
-				nearestPost = post;
-			}
-		}
-
-		return nearestPost;
+		return (Post) nearestLocation(posts);
 	}
 
   public GridSquare furthestWater() {
     GridSquare[][] gridSquares = Player.gridSquares;
-    GridSquare furthestWater = null; 
+    GridSquare furthestWater = null;
     double maxDist = Double.NEGATIVE_INFINITY;
 
     for (int x = 0; x < gridSquares.length; x++) {
       for (int y = 0; y < gridSquares.length; y++) {
-        GridSquare square = gridSquares[x][y];        
+        GridSquare square = gridSquares[x][y];
         if (square.water) {
           double dist = distanceTo(square);
           if (dist > maxDist) {
@@ -124,12 +113,12 @@ public class Post extends Location {
 
   public GridSquare nearestWater() {
     GridSquare[][] gridSquares = Player.gridSquares;
-    GridSquare nearestWater = null; 
+    GridSquare nearestWater = null;
     double minDist = Double.POSITIVE_INFINITY;
 
     for (int x = 0; x < gridSquares.length; x++) {
       for (int y = 0; y < gridSquares.length; y++) {
-        GridSquare square = gridSquares[x][y];        
+        GridSquare square = gridSquares[x][y];
         if (square.water) {
           double dist = distanceTo(square);
           if (dist < minDist) {

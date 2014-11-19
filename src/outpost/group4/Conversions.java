@@ -29,7 +29,7 @@ public class Conversions {
   public static GridSquare[][] gridSquaresFromPoints(Point[] points) {
     int size = Player.parameters.size;
     GridSquare[][] gridSquares = new GridSquare[size][size];
-   
+
     int x = 0;
     int y = 0;
     for (int i = 0; i < points.length; i++) {
@@ -44,10 +44,6 @@ public class Conversions {
     }
 
     return gridSquares;
-  }
-
-  public static Point[] pointsFromGridSquares(ArrayList<GridSquare> gridSquares) {
-    return null; // fill in later if necessary
   }
 
 }
