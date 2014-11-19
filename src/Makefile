@@ -1,8 +1,8 @@
 MAP=map0
-PLAYER0=group1
-PLAYER1=group1
-PLAYER2=group1
-PLAYER3=group1
+PLAYER0=group4
+PLAYER1=group4
+PLAYER2=group4
+PLAYER3=group4
 R=10
 L=4
 W=1
@@ -16,7 +16,7 @@ dumb:
 	java outpost.sim.Outpost $(MAP) $(R) $(L) $(W) $(GUI) dumb dumb dumb dumb $(ROUNDS)
 
 us:
-	java outpost.sim.Outpost $(MAP) $(R) $(L) $(W) $(GUI) group1 group1 group1 group1 $(ROUNDS)
+	java outpost.sim.Outpost $(MAP) $(R) $(L) $(W) $(GUI) group4 group4 group4 group4 $(ROUNDS)
 
 compile:
 	javac outpost/sim/Outpost.java
