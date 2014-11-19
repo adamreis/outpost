@@ -8,13 +8,15 @@ import outpost.sim.movePair;
 
 public class Player extends outpost.sim.Player {
 		private static final int SIZE = 100;
-		
-		private Location baseLoc;
 
 		static Random random = new Random();
 
+		private Location baseLoc;
+		private GameParameters parameters;
+
 		public Player(int id) {
 			super(id);
+
 			switch (id) {
 				case 0: this.baseLoc = new Location(0,0);
 						break;
@@ -27,19 +29,21 @@ public class Player extends outpost.sim.Player {
 			}
 		}
 
-		public void init() {
-
-		}
+		public void init() { }
 
 		public int delete(ArrayList<ArrayList<Pair>> king_outpostlist, Point[] gridin) {
-				int del = random.nextInt(king_outpostlist.get(id).size());
-				return del;
+			int del = random.nextInt(king_outpostlist.get(id).size());
+			return del;
 		}
 
-		public ArrayList<movePair> move(ArrayList<ArrayList<Pair>> king_outpostlist, Point[] gridin){
-			ArrayList<Post> oldPosts = postsFromPairs(king_outpostlist.get(this.id));	
+		public ArrayList<movePair> move(ArrayList<ArrayList<Pair>> king_outpostlist, Point[] grid, int r, int L, int W, int T) {
+			if (this.parameters == null) {
+				this.parameters = new GameParameters(r, L, W, T);
+			}
+
+			ArrayList<Post> oldPosts = postsFromPairs(king_outpostlist.get(this.id));
 			ArrayList<Post> newPosts = new ArrayList<Post>();
-			
+
 			for (Post p : oldPosts) {
 				newPosts.add(p.adjacent(SIZE).get(p.id % 2));
 			}
@@ -47,15 +51,15 @@ public class Player extends outpost.sim.Player {
 			return movePairsFromPosts(newPosts);
 		}
 
-		
+
 		public ArrayList<movePair> movePairsFromPosts(ArrayList<Post> posts) {
 			ArrayList<movePair> pairs = new ArrayList<movePair>();
 			for (Post post : posts) {
 				pairs.add(new movePair(post.id, new Pair(post.x, post.y)));
-			}	
+			}
 			return pairs;
 		}
-		
+
 		public ArrayList<Post> postsFromPairs(ArrayList<Pair> pairs) {
 			ArrayList<Post> posts = new ArrayList<Post>();
 			int id = 0;
@@ -65,5 +69,3 @@ public class Player extends outpost.sim.Player {
 			return posts;
 		}
 }
-
-
