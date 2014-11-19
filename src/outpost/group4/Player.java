@@ -31,7 +31,7 @@ public class Player extends outpost.sim.Player {
 
 		public void init() { }
 
-		public int delete(ArrayList<ArrayList<Pair>> outpostList, Point[] gridin) {
+		public int delete(ArrayList<ArrayList<Pair>> outpostList, Point[] grid) {
 			int del = random.nextInt(outpostList.get(id).size());
 			return del;
 		}
@@ -41,31 +41,16 @@ public class Player extends outpost.sim.Player {
 				this.parameters = new GameParameters(r, L, W, T, SIZE);
 			}
 
-			ArrayList<Post> oldPosts = postsFromPairs(outpostList.get(this.id));
+			// perform conversions to sane classes
+			ArrayList<Post> oldPosts = Conversions.postsFromPairs(outpostList.get(this.id));
+			ArrayList<GridSquare> gridSquares = Conversions.gridSquaresFromPoints(grid);
+
 			ArrayList<Post> newPosts = new ArrayList<Post>();
 
 			for (Post p : oldPosts) {
 				newPosts.add(p.adjacentCells().get(p.id % 2));
 			}
 
-			return movePairsFromPosts(newPosts);
-		}
-
-
-		public ArrayList<movePair> movePairsFromPosts(ArrayList<Post> posts) {
-			ArrayList<movePair> pairs = new ArrayList<movePair>();
-			for (Post post : posts) {
-				pairs.add(new movePair(post.id, new Pair(post.x, post.y)));
-			}
-			return pairs;
-		}
-
-		public ArrayList<Post> postsFromPairs(ArrayList<Pair> pairs) {
-			ArrayList<Post> posts = new ArrayList<Post>();
-			int id = 0;
-			for (Pair p : pairs) {
-				posts.add(new Post(p, id++));
-			}
-			return posts;
+			return Conversions.movePairsFromPosts(newPosts);
 		}
 }
