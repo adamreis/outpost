@@ -8,20 +8,20 @@ import outpost.sim.movePair;
 
 public class GameParameters {
 
-    public int r;
-    public int l;
-    public int w;
-    public int t;
+    public int outpostRadius;
+    public int requiredLand;
+    public int requiredWater;
+    public int totalTurns;
 
     public GameParameters() {
         this(0, 0, 0, 0);
     }
 
     public GameParameters(int r, int l, int w, int t) {
-        this.r = r;
-        this.l = l;
-        this.w = w;
-        this.t = t;
+        this.outpostRadius = r;
+        this.requiredLand = l;
+        this.requiredWater = w;
+        this.totalTurns = t;
     }
 
 }
