@@ -31,17 +31,17 @@ public class Player extends outpost.sim.Player {
 
 		public void init() { }
 
-		public int delete(ArrayList<ArrayList<Pair>> king_outpostlist, Point[] gridin) {
-			int del = random.nextInt(king_outpostlist.get(id).size());
+		public int delete(ArrayList<ArrayList<Pair>> outpostList, Point[] gridin) {
+			int del = random.nextInt(outpostList.get(id).size());
 			return del;
 		}
 
-		public ArrayList<movePair> move(ArrayList<ArrayList<Pair>> king_outpostlist, Point[] grid, int r, int L, int W, int T) {
+		public ArrayList<movePair> move(ArrayList<ArrayList<Pair>> outpostList, Point[] grid, int r, int L, int W, int T) {
 			if (this.parameters == null) {
 				this.parameters = new GameParameters(r, L, W, T);
 			}
 
-			ArrayList<Post> oldPosts = postsFromPairs(king_outpostlist.get(this.id));
+			ArrayList<Post> oldPosts = postsFromPairs(outpostList.get(this.id));
 			ArrayList<Post> newPosts = new ArrayList<Post>();
 
 			for (Post p : oldPosts) {
