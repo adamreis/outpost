@@ -12,7 +12,10 @@ public class Player extends outpost.sim.Player {
 		static Random random = new Random();
 
 		private Location baseLoc;
+    private Strategy strategy;
 		protected static GameParameters parameters;
+    protected static GridSquare[][] gridSquares;
+    private int turn;
 
 		public Player(int id) {
 			super(id);
@@ -27,6 +30,8 @@ public class Player extends outpost.sim.Player {
 				case 3: this.baseLoc = new Location(0, SIZE-1);
 						break;
 			}
+
+      turn = 0;
 		}
 
 		public void init() { }
@@ -43,14 +48,15 @@ public class Player extends outpost.sim.Player {
 
 			// perform conversions to sane classes
 			ArrayList<Post> oldPosts = Conversions.postsFromPairs(outpostList.get(this.id));
-			ArrayList<GridSquare> gridSquares = Conversions.gridSquaresFromPoints(grid);
+			gridSquares = Conversions.gridSquaresFromPoints(grid);
 
-			ArrayList<Post> newPosts = new ArrayList<Post>();
+      strategy = new Strategy(oldPosts);
+      ArrayList<Post> newPosts = strategy.move();
 
-			for (Post p : oldPosts) {
-				newPosts.add(p.adjacentCells().get(p.id % 2));
-			}
 
-			return Conversions.movePairsFromPosts(newPosts);
+      turn += 1;
+      System.out.printf("turn: %d, newPosts size: %d\n", turn, newPosts.size());
+
+      return Conversions.movePairsFromPosts(newPosts);
 		}
 }

@@ -10,6 +10,7 @@ public class Conversions {
 
   public static ArrayList<movePair> movePairsFromPosts(ArrayList<Post> posts) {
     ArrayList<movePair> pairs = new ArrayList<movePair>();
+
     for (Post post : posts) {
       pairs.add(new movePair(post.id, new Pair(post.x, post.y)));
     }
@@ -25,12 +26,23 @@ public class Conversions {
     return posts;
   }
 
-  public static ArrayList<GridSquare> gridSquaresFromPoints(Point[] points) {
-    ArrayList<GridSquare> gridSquares = new ArrayList<GridSquare>();
-    for (Point point : points) {
-      ArrayList<Post> owners = postsFromPairs(point.ownerlist);
-      gridSquares.add(new GridSquare(point, owners));
+  public static GridSquare[][] gridSquaresFromPoints(Point[] points) {
+    int size = Player.parameters.size;
+    GridSquare[][] gridSquares = new GridSquare[size][size];
+   
+    int x = 0;
+    int y = 0;
+    for (int i = 0; i < points.length; i++) {
+      Point p = points[i];
+      ArrayList<Post> owners = postsFromPairs(p.ownerlist);
+      gridSquares[x][y] = new GridSquare(p, owners);
+      y += 1;
+      if (y % 100 == 0) {
+        y = 0;
+        x += 1;
+      }
     }
+
     return gridSquares;
   }
 
