@@ -12,7 +12,7 @@ public class Player extends outpost.sim.Player {
 		static Random random = new Random();
 
 		private Location baseLoc;
-		private GameParameters parameters;
+		protected static GameParameters parameters;
 
 		public Player(int id) {
 			super(id);
@@ -38,14 +38,14 @@ public class Player extends outpost.sim.Player {
 
 		public ArrayList<movePair> move(ArrayList<ArrayList<Pair>> outpostList, Point[] grid, int r, int L, int W, int T) {
 			if (this.parameters == null) {
-				this.parameters = new GameParameters(r, L, W, T);
+				this.parameters = new GameParameters(r, L, W, T, SIZE);
 			}
 
 			ArrayList<Post> oldPosts = postsFromPairs(outpostList.get(this.id));
 			ArrayList<Post> newPosts = new ArrayList<Post>();
 
 			for (Post p : oldPosts) {
-				newPosts.add(p.adjacent(SIZE).get(p.id % 2));
+				newPosts.add(p.adjacentCells(SIZE).get(p.id % 2));
 			}
 
 			return movePairsFromPosts(newPosts);
