@@ -28,7 +28,9 @@ public class Post extends Location {
     return "outpost #" + this.id + ": " + super.toString();
   }
 
-	public ArrayList<Post> adjacentCells(int size) {
+	public ArrayList<Post> adjacentCells() {
+		int size = Player.parameters.size;
+
 		ArrayList<Post> adj = new ArrayList<Post>();
 
 		if (this.x > 0) // left
@@ -78,7 +80,7 @@ public class Post extends Location {
 		Post furthestPost = null;
 		double maxDist = Double.NEGATIVE_INFINITY;
 
-		ArrayList<Post> possibleMoves = adjacentCells(Player.parameters.size);
+		ArrayList<Post> possibleMoves = adjacentCells();
 		for (Post possiblePost : possibleMoves) {
 			double dist = distanceTo(post, possiblePost);
 			if (dist > maxDist) {

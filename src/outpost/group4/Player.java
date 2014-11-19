@@ -45,7 +45,7 @@ public class Player extends outpost.sim.Player {
 			ArrayList<Post> newPosts = new ArrayList<Post>();
 
 			for (Post p : oldPosts) {
-				newPosts.add(p.adjacentCells(SIZE).get(p.id % 2));
+				newPosts.add(p.adjacentCells().get(p.id % 2));
 			}
 
 			return movePairsFromPosts(newPosts);
