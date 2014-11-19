@@ -2,7 +2,7 @@ package outpost.group4;
 
 import java.util.ArrayList;
 
-import outpost.group1.Location;
+import outpost.group4.Location;
 import outpost.sim.Pair;
 import outpost.sim.movePair;
 
