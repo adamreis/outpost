@@ -1,11 +1,11 @@
 MAP=map0
-PLAYER0=group4
-PLAYER1=group4
-PLAYER2=group4
+PLAYER0=dumb
+PLAYER1=dumb
+PLAYER2=dumb
 PLAYER3=group4
 R=10
-L=4
-W=1
+L=100
+W=25
 GUI=false
 ROUNDS=10000
 
@@ -20,4 +20,3 @@ us:
 
 compile:
 	javac outpost/sim/Outpost.java
-
