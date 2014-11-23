@@ -4,8 +4,8 @@ PLAYER1=dumb
 PLAYER2=dumb
 PLAYER3=group4
 R=10
-L=100
-W=25
+L=4
+W=1
 GUI=false
 ROUNDS=10000
 
