@@ -15,6 +15,7 @@ public class Player extends outpost.sim.Player {
     private Strategy strategy;
 		protected static GameParameters parameters;
     protected static GridSquare[][] gridSquares;
+    protected static Board board;
     private int turn;
 
 		public Player(int id) {
@@ -56,7 +57,8 @@ public class Player extends outpost.sim.Player {
 
 			// perform conversions to sane classes
 			ArrayList<Post> oldPosts = Conversions.postsFromPairs(outpostList.get(this.id));
-			gridSquares = Conversions.gridSquaresFromPoints(grid);
+      board = new Board(grid) ;
+			//gridSquares = Conversions.gridSquaresFromPoints(grid);
 
 			boolean newSeason = (turn % 10 == 0);
 			ArrayList<Post> newPosts = strategy.move(oldPosts, newSeason);
