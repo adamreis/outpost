@@ -31,27 +31,15 @@ public class Location {
 
     @Override
     public String toString() {
-    	return "(" + Double.toString(x) + " " + Double.toString(y) + ")";
-    }
-
-    static public double distanceSquared(double x1, double y1, double x2, double y2) {
-    	return (x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2);
+    	return "(" + x + " " + y + ")";
     }
 
     static public double distance(double x1, double y1, double x2, double y2) {
-    	return Math.sqrt(distanceSquared(x1, y1, x2, y2));
-    }
-
-    public double distanceSquared(Location comparison) {
-    	return distanceSquaredTo(this, comparison);
+      return Math.abs(x2 - x1) + Math.abs(y2 - y1);
     }
 
     public double distanceTo(Location comparison) {
     	return distanceTo(this, comparison);
-    }
-
-    static public double distanceSquaredTo(Location l1, Location l2) {
-    	return distanceSquared(l1.x, l1.y, l2.x, l2.y);
     }
 
     static public double distanceTo(Location l1, Location l2) {
