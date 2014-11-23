@@ -59,7 +59,7 @@ public class Player extends outpost.sim.Player {
 			gridSquares = Conversions.gridSquaresFromPoints(grid);
 
 			boolean newSeason = (turn % 10 == 0);
-      ArrayList<Post> newPosts = strategy.move(oldPosts, newSeason);
+			ArrayList<Post> newPosts = strategy.move(oldPosts, newSeason);
 
       turn += 1;
 
