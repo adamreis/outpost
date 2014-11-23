@@ -31,6 +31,8 @@ public class Player extends outpost.sim.Player {
 						break;
 			}
 
+			strategy = new AggressiveDefensiveStrategy();
+
       turn = 0;
 		}
 
@@ -41,8 +43,6 @@ public class Player extends outpost.sim.Player {
 
 			Post nearestPost = (Post) this.baseLoc.nearestLocation(posts);
 			int del = posts.indexOf(nearestPost);
-
-			System.out.println("DEL INDEX: " + del);
 
 			if (del < 0) del = random.nextInt(outpostList.get(id).size());
 
@@ -58,9 +58,8 @@ public class Player extends outpost.sim.Player {
 			ArrayList<Post> oldPosts = Conversions.postsFromPairs(outpostList.get(this.id));
 			gridSquares = Conversions.gridSquaresFromPoints(grid);
 
-      strategy = new Strategy(oldPosts);
-      ArrayList<Post> newPosts = strategy.move();
-
+			boolean newSeason = (turn % 10 == 0);
+			ArrayList<Post> newPosts = strategy.move(oldPosts, newSeason);
 
       turn += 1;
 
