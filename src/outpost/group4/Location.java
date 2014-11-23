@@ -31,7 +31,7 @@ public class Location {
 
     @Override
     public String toString() {
-    	return "(" + Double.toString(x) + " " + Double.toString(y) + ")";
+    	return "(" + x + " " + y + ")";
     }
 
     static public double distance(double x1, double y1, double x2, double y2) {

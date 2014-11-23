@@ -74,7 +74,7 @@ public class Post extends Location {
 		for (Post post : posts) {
       if (post == this) continue;
 
-			if (isPostUnderInfluence(post)) {
+			if (isLocationUnderInfluence(post)) {
 				postsUnderInfluence.add(post);
 			}
 		}
@@ -82,8 +82,12 @@ public class Post extends Location {
 		return postsUnderInfluence;
 	}
 
-	public boolean isPostUnderInfluence(Post post) {
-		return (this.distanceTo(post) <= 2 * Player.parameters.outpostRadius);
+	public boolean isLocationUnderInfluence(Location location) {
+		return isLocationUnderInfluence(location, 0);
+	}
+
+	public boolean isLocationUnderInfluence(Location location, int buffer) {
+		return (this.distanceTo(location) <= Player.parameters.outpostRadius + buffer);
 	}
 
 	public Post nearestPost(ArrayList<Post> posts) {
