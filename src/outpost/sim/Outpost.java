@@ -147,6 +147,12 @@ public class Outpost
 	static double distance(Point a, Point b) {
 		return Math.sqrt((a.x-b.x) * (a.x-b.x) +
 				(a.y-b.y) * (a.y-b.y));
+		//return Math.max(a.x-b.x, a.y-b.y);
+	}
+	static double M_distance(Point a, Point b) {
+		//return Math.sqrt((a.x-b.x) * (a.x-b.x) +
+			//	(a.y-b.y) * (a.y-b.y));
+		return Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
 	}
 
 	static double vectorLength(double ox, double oy) {
@@ -175,6 +181,7 @@ public class Outpost
 		JLabel label0;
 		JLabel label1;
 		JLabel label2;
+		JLabel label3;
 
 		public OutpostUI() {
 			setPreferredSize(new Dimension(FRAME_SIZE, FRAME_SIZE));
@@ -195,16 +202,16 @@ public class Outpost
 */
 			if (tick > nrounds) {
 				calculateres();
-				label.setText(group0+" control water "+water[0]+", land "+soil[0]);
-				label.setForeground(Color.blue);
+				label.setText("End!  "+group0+" control water "+water[0]+", land "+soil[0]);
+				label.setForeground(Color.BLACK);
 				label.setVisible(true);
-				label0.setText(group1+" control water "+water[1]+", land "+soil[1]);
-				label0.setForeground(Color.GREEN.darker());
+				label0.setText("End!  "+group1+" control water "+water[1]+", land "+soil[1]);
+				label0.setForeground(Color.BLACK);
 				label0.setVisible(true);
-				label1.setText(group2+" control water "+water[2]+", land "+soil[2]);
-				label1.setForeground(Color.RED);
+				label1.setText("End!  "+group2+" control water "+water[2]+", land "+soil[2]);
+				label1.setForeground(Color.BLACK);
 				label1.setVisible(true);
-				label2.setText(group3+" control water "+water[3]+", land "+soil[3]);
+				label2.setText("End!  "+group3+" control water "+water[3]+", land "+soil[3]);
 				label2.setForeground(Color.BLACK);
 				label2.setVisible(true);
 					//System.err.printf("Player %d control water %f, land %f\n", i, water[i], soil[i]);
@@ -213,16 +220,18 @@ public class Outpost
 			}
 			else {
 				playStep();
-				label.setText(group0+" control water "+water[0]+", land "+soil[0]);
-				label.setForeground(Color.BLUE);
+				label3.setText("(water, land, outposts)      ticks: "+tick);
+				label3.setVisible(true);
+				label.setText(group0+" ("+Math.round(water[0])+", "+Math.round(soil[0])+", "+king_outpostlist.get(0).size()+")");
+				label.setForeground(Color.BLACK);
 				label.setVisible(true);
-				label0.setText(group1+" control water "+water[1]+", land "+soil[1]);
-				label0.setForeground(Color.GREEN.darker());
+				label0.setText(group1+" ("+Math.round(water[1])+" ,"+Math.round(soil[1])+", "+king_outpostlist.get(1).size()+")");
+				label0.setForeground(Color.BLACK);
 				label0.setVisible(true);
-				label1.setText(group2+" control water "+water[2]+", land "+soil[2]);
-				label1.setForeground(Color.RED);
+				label1.setText(group2+" ("+Math.round(water[2])+" ,"+Math.round(soil[2])+", "+king_outpostlist.get(2).size()+")");
+				label1.setForeground(Color.BLACK);
 				label1.setVisible(true);
-				label2.setText(group3+" control water "+water[3]+", land "+soil[3]);
+				label2.setText(group3+" ("+Math.round(water[3])+" ,"+Math.round(soil[3])+", "+king_outpostlist.get(3).size()+")");
 				label2.setForeground(Color.BLACK);
 				label2.setVisible(true);
 				return true;
@@ -266,21 +275,30 @@ public class Outpost
 
 			label = new JLabel();
 			label.setVisible(false);
-			label.setBounds(0, 50, 500, 15);
+			label.setBounds(30, 90, 450, 15);
 			label.setFont(new Font("Arial", Font.PLAIN, 15));
 			label0 = new JLabel();
 			label0.setVisible(false);
-			label0.setBounds(0, 65, 500, 15);
+			//label0.setBounds(0, 65, 500, 15);
+			label0.setBounds(600, 90, 450, 15);
 			label0.setFont(new Font("Arial", Font.PLAIN, 15));
 			label1 = new JLabel();
 			label1.setVisible(false);
-			label1.setBounds(0, 80, 500, 15);
+			//label1.setBounds(0, 80, 500, 15);
+			//label1.setBounds(0, 700, 400, 15);
+			label1.setBounds(600, 700, 450, 15);
 			label1.setFont(new Font("Arial", Font.PLAIN, 15));
 			label2 = new JLabel();
 			label2.setVisible(false);
-			label2.setBounds(0, 95, 500, 15);
+			//label2.setBounds(0, 95, 500, 15);
+			//label2.setBounds(600, 700, 400, 15);
+			label2.setBounds(30, 700, 450, 15);
 			label2.setFont(new Font("Arial", Font.PLAIN, 15));
 			field.setBounds(100, 100, FIELD_SIZE + 50, FIELD_SIZE + 50);
+			label3 = new JLabel();
+			label3.setVisible(false);
+			label3.setBounds(30, 75, 450, 15);
+			label3.setFont(new Font("Arial", Font.PLAIN, 15));
 
 			this.add(next);
 			this.add(next10);
@@ -289,6 +307,7 @@ public class Outpost
 			this.add(label0);
 			this.add(label1);
 			this.add(label2);
+			this.add(label3);
 			this.add(field);
 
 			f.add(this);
@@ -332,13 +351,13 @@ public class Outpost
 
 					for (int j=0; j<size; j++) {
 						if (grid[i*size+j].water) {
-							g2.setPaint(Color.blue);
+							g2.setPaint(Color.blue.brighter());
 						}
 						else {
 							g2.setPaint(Color.orange);
 						}
 						g2.fill(new Rectangle2D.Double(ox+x_in*i,oy+y_in*j,x_in,y_in));
-						if (grid[i*size+j].ownerlist.size()>0) {
+						if (grid[i*size+j].ownerlist.size()==1) {
 							//	System.out.println("this is owned by player 0");
 							if (grid[i*size+j].ownerlist.get(0).x==0)  {
 
@@ -360,6 +379,9 @@ public class Outpost
 								g2.setPaint(Color.RED);
 								g2.fill(new Rectangle2D.Double(ox+x_in/4+x_in*i,oy+x_in/4+y_in*j,x_in/2,y_in/2));
 							}
+						} else if (grid[i*size+j].ownerlist.size()>1) {
+							g2.setPaint(Color.GRAY);
+							g2.fill(new Rectangle2D.Double(ox+x_in/4+x_in*i,oy+x_in/4+y_in*j,x_in/2,y_in/2));
 						}
 					}
 
@@ -408,7 +430,7 @@ public class Outpost
 
 		for (int j =0 ; j<king_outpostlist.size(); j++) {
 			for (int f =0; f<king_outpostlist.get(j).size(); f++) {
-				double d = distance(PairtoPoint(king_outpostlist.get(j).get(f)), pr);
+				double d = M_distance(PairtoPoint(king_outpostlist.get(j).get(f)), pr);
 				if (d <= mindist) {
 					mindist = d;
 
@@ -418,7 +440,7 @@ public class Outpost
 		if (mindist <= r_distance){
 			for (int j =0 ; j<king_outpostlist.size(); j++) {
 				for (int f =0; f<king_outpostlist.get(j).size(); f++) {
-					double d = distance(PairtoPoint(king_outpostlist.get(j).get(f)), pr);
+					double d = M_distance(PairtoPoint(king_outpostlist.get(j).get(f)), pr);
 					if (d == mindist) {
 						Pair tmp = new Pair(j, f);
 						if (pr.ownerlist.size()==0) {
@@ -495,7 +517,26 @@ public class Outpost
 
 	}
 
-	void updatemap() {
+	void updatemap(ArrayList<movePair> nextlist, int id) {
+		for (int i=0; i<nextlist.size(); i++) {
+			movePair mpr = nextlist.get(i);
+			
+			if (mpr.id<king_outpostlist.get(id).size()){
+				Pair current = king_outpostlist.get(id).get(mpr.id);
+				Pair next = mpr.pr;
+
+				for (int j=0; j<surroundpr(current).size(); j++) {
+					if (surroundpr(current).get(j).equals(next)) {
+						if (!PairtoPoint(next).water) {
+							Pair tmp = new Pair(next.x, next.y);
+							king_outpostlist.get(id).set((mpr.id), tmp);
+						}
+					}
+				}
+
+			}
+			
+		}
 		for (int i=0; i<size; i++) {
 			for (int j=0; j<size; j++) {
 				updatePoint(grid[i*size+j]);
@@ -510,10 +551,10 @@ public class Outpost
 		return new Pair(pt.x, pt.y);
 	}
 
-	void validateMove(ArrayList<movePair> nextlist, int id) {
-
+	ArrayList<Pair> validateMove(ArrayList<movePair> nextlist, int id) {
+		ArrayList<Pair> toremove = new ArrayList<Pair>();
 		//reach = false;
-		for (int i=0; i<nextlist.size(); i++) {
+	/*	for (int i=0; i<nextlist.size(); i++) {
 			movePair mpr = nextlist.get(i);
 			if (mpr.id<king_outpostlist.get(id).size()){
 				Pair current = king_outpostlist.get(id).get(mpr.id);
@@ -529,7 +570,7 @@ public class Outpost
 				}
 
 			}
-		}
+		}*/
 
 		Pair target = null;
 		if (id ==0) {
@@ -576,10 +617,33 @@ public class Outpost
 		for (int i = king_outpostlist.get(id).size() - 1; i >= 0; --i) {
 			Pair p = king_outpostlist.get(id).get(i);
 			if (!vst[p.x][p.y]) {
-				System.out.printf("player %d's outpost (%d, %d) cannot find a supplyline back \n", id, p.x, p.y);
-				king_outpostlist.get(id).remove(i);
+				//System.out.printf("player %d's outpost (%d, %d) cannot find a supplyline back \n", id, p.x, p.y);
+				//System.out.print(group0);
+				if (id==0) {
+					System.err.print(group0);
+					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", id, p.x, p.y);
+					
+				}
+				if (id==1) {
+					System.err.print(group1);
+					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", id, p.x, p.y);
+					
+				}
+				if (id==2) {
+					System.err.print(group2);
+					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", id, p.x, p.y);
+					
+				}
+				if (id==3) {
+					System.err.print(group3);
+					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", id, p.x, p.y);
+					
+				}
+				toremove.add(new Pair(id, i));
+				//king_outpostlist.get(id).remove(i);
 			}
 		}
+		return toremove;
 	}
 
 	static boolean hascontained(ArrayList<Pair> list, Pair pr) {
@@ -716,17 +780,27 @@ public class Outpost
 			calculateres();
 			//updatemap();
 		}
-
+		ArrayList<movePair> nextlist0 = new ArrayList<movePair>();
+		ArrayList<movePair> nextlist1 = new ArrayList<movePair>();
+		ArrayList<movePair> nextlist2 = new ArrayList<movePair>();
+		ArrayList<movePair> nextlist3 = new ArrayList<movePair>();
 		for (int d=0; d<4; d++) {
 			try {
-				ArrayList<movePair> nextlist = new ArrayList<movePair>();
+				//ArrayList<movePair> nextlist = new ArrayList<movePair>();
 				if (king_outpostlist.get(d).size()>noutpost[d]) {
 					int removedid = players[d].delete(king_outpostlist, grid);
 					king_outpostlist.get(d).remove(removedid);
-					System.out.printf("player %d delete outpost %d\n", d, removedid);
+					System.err.printf("player %d delete outpost %d\n", d, removedid);
 				}
-				nextlist = players[d].move(king_outpostlist, grid, r_distance, L, W, MAX_TICKS);
-				for (int i=0; i<nextlist.size(); i++) {
+				if (d==0)
+					nextlist0 = players[d].move(king_outpostlist, grid, r_distance, L, W, MAX_TICKS);
+				if (d==1)
+					nextlist1 = players[d].move(king_outpostlist, grid, r_distance, L, W, MAX_TICKS);
+				if (d==2)
+					nextlist2 = players[d].move(king_outpostlist, grid, r_distance, L, W, MAX_TICKS);
+				if (d==3)
+					nextlist3 = players[d].move(king_outpostlist, grid, r_distance, L, W, MAX_TICKS);
+				/*for (int i=0; i<nextlist.size(); i++) {
 					//movePair next = new movePair();
 					//next = nextlist.get(i);
 					
@@ -734,7 +808,7 @@ public class Outpost
 					
 					updatemap();
 					
-				}
+				}*/
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -742,6 +816,75 @@ public class Outpost
 				//next[d] = pipers[d]; // let the dog stay
 			}
 		}
+		updatemap(nextlist0, 0);
+		updatemap(nextlist1, 1);
+		updatemap(nextlist2, 2);
+		updatemap(nextlist3, 3);
+		ArrayList<ArrayList<Pair>> toremove = new ArrayList<ArrayList<Pair>>();
+		for (int d=0; d<4; d++) {
+			if (d==0){
+			//for (int i=0; i<nextlist0.size(); i++) {
+				//movePair next = new movePair();
+				//next = nextlist.get(i);
+				
+				toremove.add(validateMove(nextlist0, d));
+				
+				//updatemap();
+				
+			//}
+			}
+			if (d==1) {
+				//for (int i=0; i<nextlist1.size(); i++) {
+					//movePair next = new movePair();
+					//next = nextlist.get(i);
+					
+					toremove.add(validateMove(nextlist1, d));
+					
+					//updatemap();
+					
+				//}
+			}
+			if (d==2) {
+			//for (int i=0; i<nextlist2.size(); i++) {
+				//movePair next = new movePair();
+				//next = nextlist.get(i);
+				
+				toremove.add(validateMove(nextlist2, d));
+				
+				//updatemap();
+				
+			//}
+			}
+			if (d==3) {
+				//for (int i=0; i<nextlist3.size(); i++) {
+					//movePair next = new movePair();
+					//next = nextlist.get(i);
+					
+					toremove.add(validateMove(nextlist3, d));
+					
+					//updatemap();
+					
+				//}
+			}
+			}
+		//System.out.println(toremove);
+		for (int i=0; i<toremove.size(); i++) {
+			for (int j=0; j<toremove.get(i).size(); j++) {
+				king_outpostlist.get(toremove.get(i).get(j).x).remove(toremove.get(i).get(j).y);
+				System.out.printf("(%d, %d)",toremove.get(i).get(j).x, toremove.get(i).get(j).y);
+			}
+			
+		}
+		/*for (int i=0; i<4; i++) {
+			for (int j=0; j<king_outpostlist.get(i).size(); j++) {
+				System.err.printf("(%d, %d)",king_outpostlist.get(i).get(j).x, king_outpostlist.get(i).get(j).y);
+			}
+			System.err.println();
+		}*/
+		updatemap(nextlist0, 0);
+		updatemap(nextlist1, 1);
+		updatemap(nextlist2, 2);
+		updatemap(nextlist3, 3);
 	/*	if (tick == nrounds) {
 			calculateres();
 			for (int i=0; i<4; i++) {
@@ -804,10 +947,16 @@ public class Outpost
 				pr.y = Integer.parseInt(item2.get(1));
 				list.add(pr);
 				counter = counter +1;
-				grid[pr.x*size+pr.y].water = true;
+				/*grid[pr.x*size+pr.y].water = true;
 				grid[(size-pr.y)*size+pr.x].water = true;
 				grid[(100-pr.x)*size+(100-pr.y)].water = true;
-				grid[pr.y*size+100-pr.x].water = true;
+				grid[pr.y*size+100-pr.x].water = true;*/
+				
+				grid[pr.x*size+pr.y].water = true;
+				grid[(size-pr.y-1)*size+pr.x].water = true;
+				grid[(size-pr.x-1)*size+(size-pr.y-1)].water = true;
+				grid[pr.y*size+size-pr.x-1].water = true;
+				
 				//grid[(100-pr.x)*size+pr.y].water = true;
 				//grid[(100-pr.x)*size+100-pr.y].water = true;
 			}
