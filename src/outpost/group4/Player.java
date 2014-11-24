@@ -14,7 +14,6 @@ public class Player extends outpost.sim.Player {
 		private Location baseLoc;
     private Strategy strategy;
 		protected static GameParameters parameters;
-    protected static GridSquare[][] gridSquares;
     protected static Board board;
     private int turn;
 

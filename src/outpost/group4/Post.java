@@ -56,7 +56,7 @@ public class Post extends Location {
 
   public boolean validatePost(Post post) {
     int size = Player.parameters.size;
-    GridSquare[][] gridSquares = Player.gridSquares;
+    GridSquare[][] gridSquares = Player.board.getGridSquares();
 
     // check board boundaries
     if (post.x < 0 || post.x >= size || post.y < 0 || post.y >= size)
@@ -95,7 +95,7 @@ public class Post extends Location {
 	}
 
   public GridSquare furthestWater() {
-    GridSquare[][] gridSquares = Player.gridSquares;
+    GridSquare[][] gridSquares = Player.board.getGridSquares();
     GridSquare furthestWater = null;
     double maxDist = Double.NEGATIVE_INFINITY;
 
@@ -116,7 +116,7 @@ public class Post extends Location {
   }
 
   public GridSquare nearestWater() {
-    GridSquare[][] gridSquares = Player.gridSquares;
+    GridSquare[][] gridSquares = Player.board.getGridSquares();
     GridSquare nearestWater = null;
     double minDist = Double.POSITIVE_INFINITY;
 
