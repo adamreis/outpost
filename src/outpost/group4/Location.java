@@ -103,7 +103,7 @@ public class Location {
 
 	public boolean validateLocation(Location loc) {
 		int size = Player.parameters.size;
-		GridSquare[][] gridSquares = Player.gridSquares;
+		GridSquare[][] gridSquares = Player.board.getGridSquares();
 
 		// check board boundaries
 		if (loc.x < 0 || loc.x >= size || loc.y < 0 || loc.y >= size)
