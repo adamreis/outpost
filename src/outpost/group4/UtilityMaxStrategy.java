@@ -13,7 +13,7 @@ public class UtilityMaxStrategy implements Strategy {
         this.otherPlayerPosts = otherPlayerPosts;
 
         ArrayList<Post> newPosts = new ArrayList<Post>();
-        BoardHeuristic heuristic = new MaxTerritoryHeuristic(Player.board);
+        BoardHeuristic heuristic = new TerritorialGainNearBaseHeuristic(Player.board);
 
         if (newSeason) {
             bestSquares = heuristic.getBestSquares();
@@ -56,9 +56,12 @@ public class UtilityMaxStrategy implements Strategy {
                 newPost = emergency;
             }
             else {
-                ArrayList<Location> path = p.shortestPathToLocation(bestSquares.get((i * Player.parameters.outpostRadius) % bestSquares.size()));
-                newPost.x = path.get(1).x;
-                newPost.y = path.get(1).y;
+                int squareIndex = (i * Player.parameters.outpostRadius) % bestSquares.size();
+                ArrayList<Location> path = p.shortestPathToLocation(bestSquares.get(squareIndex));
+
+                int nextLocationIndex = (path.size() > 1)? 1 : 0;
+                newPost.x = path.get(nextLocationIndex).x;
+                newPost.y = path.get(nextLocationIndex).y;
             }
 
             newPosts.add(newPost);
