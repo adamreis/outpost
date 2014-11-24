@@ -5,10 +5,12 @@ import java.util.*;
 public class UtilityMaxStrategy implements Strategy {
 
     ArrayList<Post> posts;
+    ArrayList<ArrayList<Post>> otherPlayerPosts;
     ArrayList<GridSquare> bestSquares;
 
-    public ArrayList<Post> move(ArrayList<ArrayList<Post>> masterList, ArrayList<Post> posts, boolean newSeason) {
+    public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {
         this.posts = posts;
+        this.otherPlayerPosts = otherPlayerPosts;
 
         ArrayList<Post> newPosts = new ArrayList<Post>();
         BoardHeuristic heuristic = new MaxTerritoryHeuristic(Player.board);
@@ -48,12 +50,24 @@ public class UtilityMaxStrategy implements Strategy {
             //ArrayList<Location> path = p.shortestPathToLocation((Location) bestSquares.get(0));
 
             Post newPost = p;
-            ArrayList<Location> path = p.shortestPathToLocation((Location) bestSquares.get((i * Player.parameters.outpostRadius) % bestSquares.size()));
-            newPost.x = path.get(1).x;
-            newPost.y = path.get(1).y;
+
+            Post emergency = emergencyMove(p);
+            if (emergency != null) {
+                newPost = emergency;
+            }
+            else {
+                ArrayList<Location> path = p.shortestPathToLocation(bestSquares.get((i * Player.parameters.outpostRadius) % bestSquares.size()));
+                newPost.x = path.get(1).x;
+                newPost.y = path.get(1).y;
+            }
+
             newPosts.add(newPost);
         }
 
         return newPosts;
+    }
+
+    public Post emergencyMove(Post p) {
+        return null;
     }
 }

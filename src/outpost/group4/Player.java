@@ -47,15 +47,21 @@ public class Player extends outpost.sim.Player {
 
 		// perform conversions to custom classes
 		ArrayList<ArrayList<Post>> masterPosts = new ArrayList<ArrayList<Post>>(outpostList.size());
+		ArrayList<ArrayList<Post>> otherPlayerPosts = new ArrayList<ArrayList<Post>>(outpostList.size() - 1);
 		for (int i = 0; i < outpostList.size(); i++) {
-				masterPosts.add(Conversions.postsFromPairs(outpostList.get(i)));
+				ArrayList<Post> posts = Conversions.postsFromPairs(outpostList.get(i));
+				masterPosts.add(posts);
+
+				if (i != this.id) {
+						otherPlayerPosts.add(posts);
+				}
 		}
 		ArrayList<Post> oldPosts = masterPosts.get(this.id);
 		board = new Board(grid);
 
 		// run the strategy
 		boolean newSeason = (turn % 10 == 0);
-		ArrayList<Post> newPosts = strategy.move(masterPosts, oldPosts, newSeason);
+		ArrayList<Post> newPosts = strategy.move(otherPlayerPosts, oldPosts, newSeason);
 
 		// increment the turn
 		turn += 1;
