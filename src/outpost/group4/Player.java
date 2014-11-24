@@ -11,7 +11,7 @@ public class Player extends outpost.sim.Player {
 
 	static Random random = new Random();
 
-	private Location baseLoc;
+	public static Location baseLoc;
 	private Strategy strategy;
 	protected static GameParameters parameters;
 	protected static Board board;
@@ -40,9 +40,10 @@ public class Player extends outpost.sim.Player {
 
 	public ArrayList<movePair> move(ArrayList<ArrayList<Pair>> outpostList, Point[] grid, int r, int L, int W, int T) {
 		if (Player.parameters == null) {
-			this.baseLoc = new Location(outpostList.get(this.id).get(0));
+			baseLoc = new Location(outpostList.get(this.id).get(0));
 			Player.parameters = new GameParameters(r, L, W, T, SIZE);
 		}
+
 		// perform conversions to sane classes
 		ArrayList<Post> oldPosts = Conversions.postsFromPairs(outpostList.get(this.id));
 		board = new Board(grid) ;
