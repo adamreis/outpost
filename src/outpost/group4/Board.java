@@ -31,7 +31,7 @@ public class Board {
                     if (i + j != dist || x < 0 || y < 0 || x >= size || y >= size) continue;
 
                     GridSquare temp = board[x][y];
-                    if (temp.owners.size() == 0) {
+                    if (!temp.water && temp.owners.size() == 0) {
                         availableSquares.add(temp);
                     } 
                 }
@@ -39,5 +39,26 @@ public class Board {
         }
         return availableSquares;
     }
+
+    public ArrayList<GridSquare> getBestSquares() {
+        ArrayList<GridSquare> bestSquares = new ArrayList<GridSquare>();
+
+        int maxTerritory = 0;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                int currTerritory = availableTerritory(board[i][j]).size();
+                if (currTerritory > maxTerritory) {
+                    maxTerritory = currTerritory;
+                    bestSquares.clear();
+                    bestSquares.add(board[i][j]);
+                } else if (currTerritory == maxTerritory) {
+                    bestSquares.add(board[i][j]);
+                }
+            }
+        }
+
+        return bestSquares;
+    }
+
 }
 

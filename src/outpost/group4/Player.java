@@ -11,8 +11,8 @@ public class Player extends outpost.sim.Player {
 
 	  static Random random = new Random();
 
-		private Location baseLoc;
     private Strategy strategy;
+		protected static Location baseLoc;
 		protected static GameParameters parameters;
     protected static Board board;
 	  private int turn;
@@ -31,7 +31,7 @@ public class Player extends outpost.sim.Player {
 	  	          break;
 	      }
 
-	      strategy = new AggressiveDefensiveStrategy();
+	      strategy = new UtilityMaxStrategy();
 
 		    turn = 0;
     }
