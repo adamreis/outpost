@@ -11,10 +11,10 @@ public class UtilityMaxStrategy implements Strategy {
         this.posts = posts;
 
         ArrayList<Post> newPosts = new ArrayList<Post>();
-        Board board = Player.board;
-        
+        BoardHeuristic heuristic = new MaxTerritoryHeuristic(Player.board);
+
         if (newSeason) {
-            bestSquares = board.getBestSquares();
+            bestSquares = heuristic.getBestSquares();
 
             // sort bestSquares by closeness to baseLoc
             Collections.sort(bestSquares, new Comparator<GridSquare>() {
@@ -28,8 +28,8 @@ public class UtilityMaxStrategy implements Strategy {
                     }
                 }
             });
-        } 
-     
+        }
+
         for (int i = 0; i < posts.size(); i++) {
             Post p = posts.get(i);
 
@@ -57,4 +57,3 @@ public class UtilityMaxStrategy implements Strategy {
         return newPosts;
     }
 }
-
