@@ -68,6 +68,15 @@ public class UtilityMaxStrategy implements Strategy {
     }
 
     public Post emergencyMove(Post p) {
+        for (ArrayList<Post> posts : otherPlayerPosts) {
+            for (Post opponentPost : posts) {
+                if (p.isLocationUnderInfluence(opponentPost)) {
+                    System.out.printf("EMERGENCY!!!! %s vsvsvsvsvsvs %s\n", p, opponentPost);
+                    return p.moveMaximizingDistanceFrom(opponentPost);
+                }
+            }
+        }
+
         return null;
     }
 }
