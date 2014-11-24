@@ -10,7 +10,7 @@ public class AggressiveDefensiveStrategy implements Strategy {
       this.posts = posts;
 
       ArrayList<Post> newPosts = new ArrayList<Post>();
-      GridSquare[][] gridSquares = Player.gridSquares;
+      GridSquare[][] gridSquares = Player.board.getGridSquares();
 
       for (Post p : posts) {
         Post newPost = p;
