@@ -45,8 +45,6 @@ public class Post extends Location {
 		return posts.get(preferredIndex);
 	}
 
-
-
 	public ArrayList<Post> postsUnderInfluence(ArrayList<Post> posts) {
 		ArrayList<Post> postsUnderInfluence = new ArrayList<Post>();
 
@@ -73,47 +71,47 @@ public class Post extends Location {
 		return (Post) nearestLocation(posts);
 	}
 
-	public GridSquare furthestWater() {
-		GridSquare[][] gridSquares = Player.gridSquares;
-		GridSquare furthestWater = null;
-		double maxDist = Double.NEGATIVE_INFINITY;
+  public GridSquare furthestWater() {
+    GridSquare[][] gridSquares = Player.board.getGridSquares();
+    GridSquare furthestWater = null;
+    double maxDist = Double.NEGATIVE_INFINITY;
 
-		for (int x = 0; x < gridSquares.length; x++) {
-			for (int y = 0; y < gridSquares.length; y++) {
-				GridSquare square = gridSquares[x][y];
-				if (square.water) {
-					double dist = distanceTo(square);
-					if (dist > maxDist) {
-						maxDist = dist;
-						furthestWater = square;
-					}
-				}
-			}
-		}
+    for (int x = 0; x < gridSquares.length; x++) {
+      for (int y = 0; y < gridSquares.length; y++) {
+        GridSquare square = gridSquares[x][y];
+        if (square.water) {
+          double dist = distanceTo(square);
+          if (dist > maxDist) {
+            maxDist = dist;
+            furthestWater = square;
+          }
+        }
+      }
+    }
 
-		return furthestWater;
-	}
+    return furthestWater;
+  }
 
-	public GridSquare nearestWater() {
-		GridSquare[][] gridSquares = Player.gridSquares;
-		GridSquare nearestWater = null;
-		double minDist = Double.POSITIVE_INFINITY;
+  public GridSquare nearestWater() {
+    GridSquare[][] gridSquares = Player.board.getGridSquares();
+    GridSquare nearestWater = null;
+    double minDist = Double.POSITIVE_INFINITY;
 
-		for (int x = 0; x < gridSquares.length; x++) {
-			for (int y = 0; y < gridSquares.length; y++) {
-				GridSquare square = gridSquares[x][y];
-				if (square.water) {
-					double dist = distanceTo(square);
-					if (dist < minDist) {
-						minDist = dist;
-						nearestWater = square;
-					}
-				}
-			}
-		}
+    for (int x = 0; x < gridSquares.length; x++) {
+      for (int y = 0; y < gridSquares.length; y++) {
+        GridSquare square = gridSquares[x][y];
+        if (square.water) {
+          double dist = distanceTo(square);
+          if (dist < minDist) {
+            minDist = dist;
+            nearestWater = square;
+          }
+        }
+      }
+    }
 
-		return nearestWater;
-	}
+    return nearestWater;
+  }
 
 	public Post moveMinimizingDistanceFrom(Location loc) {
 		Post nearestPost = null;

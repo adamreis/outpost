@@ -11,9 +11,9 @@ public class Player extends outpost.sim.Player {
 
 	  static Random random = new Random();
 
-	  private Location baseLoc;
-	  private Strategy strategy;
-	  protected static GameParameters parameters;
+		private Location baseLoc;
+    private Strategy strategy;
+		protected static GameParameters parameters;
     protected static Board board;
 	  private int turn;
 

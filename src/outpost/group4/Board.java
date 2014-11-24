@@ -14,21 +14,15 @@ public class Board {
         board = Conversions.gridSquaresFromPoints(points);
     }
 
+    public GridSquare[][] getGridSquares() {
+        return board;
+    }
+
     public ArrayList<GridSquare> availableTerritory(GridSquare square) {
         ArrayList<GridSquare> availableSquares = new ArrayList<GridSquare>();
 
-        //int x = square.x;
-        //int y = square.y;
-        int size = GameParameters.size;
-        int radius = GameParameters.outpostRadius;
-        //for (int i = x - radius; i <= (x + radius) && i >= 0 && i <= size; i++) {
-        //    for (int j = 0; j < radius && (j + y) >= 0 && (j - y) <= size; j++) {
-        //        GridSquare tmp = board[i][j];
-        //        if (tmp.owners.size() == 0)
-        //            availableSquares.add(tmp);
-        //    }
-        //}
-
+        int size = Player.parameters.size;
+        int radius = Player.parameters.outpostRadius;
         for (int i = -radius; i <= radius; i++) {
             for (int dist = 0; dist <= radius; dist++) {
                 for (int j = -dist; j <= dist; j++) {
@@ -39,13 +33,11 @@ public class Board {
                     GridSquare temp = board[x][y];
                     if (temp.owners.size() == 0) {
                         availableSquares.add(temp);
-                    }
+                    } 
                 }
             } 
         }
-      
-
-
+        return availableSquares;
     }
 }
 
