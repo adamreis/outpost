@@ -18,6 +18,18 @@ public class Board {
         return board;
     }
 
+    public ArrayList<GridSquare> getGridSquaresList() {
+        ArrayList<GridSquare> squares = new ArrayList<GridSquare>();
+
+        for (GridSquare[] rowArray : board) {
+            for (GridSquare square : rowArray) {
+                squares.add(square);
+            }
+        }
+
+        return squares;
+    }
+
     public ArrayList<GridSquare> availableTerritory(GridSquare square) {
         ArrayList<GridSquare> availableSquares = new ArrayList<GridSquare>();
 
@@ -37,7 +49,7 @@ public class Board {
                 }
             }
         }
-        
+
         return availableSquares;
     }
 
