@@ -14,7 +14,7 @@ public class Player extends outpost.sim.Player {
 	private Location baseLoc;
 	private Strategy strategy;
 	protected static GameParameters parameters;
-	protected static GridSquare[][] gridSquares;
+	protected static Board board;
 	private int turn;
 
 	public Player(int id) {
@@ -24,7 +24,6 @@ public class Player extends outpost.sim.Player {
 
 		this.turn = 0;
 	}
-
 
 	public void init() { }
 
@@ -44,10 +43,9 @@ public class Player extends outpost.sim.Player {
 			this.baseLoc = new Location(outpostList.get(this.id).get(0));
 			Player.parameters = new GameParameters(r, L, W, T, SIZE);
 		}
-
 		// perform conversions to sane classes
 		ArrayList<Post> oldPosts = Conversions.postsFromPairs(outpostList.get(this.id));
-		gridSquares = Conversions.gridSquaresFromPoints(grid);
+		board = new Board(grid) ;
 
 		boolean newSeason = (turn % 10 == 0);
 		ArrayList<Post> newPosts = strategy.move(oldPosts, newSeason);
@@ -56,4 +54,5 @@ public class Player extends outpost.sim.Player {
 
 		return Conversions.movePairsFromPosts(newPosts);
 	}
+
 }
