@@ -57,7 +57,6 @@ public class Player extends outpost.sim.Player {
 			// perform conversions to sane classes
 			ArrayList<Post> oldPosts = Conversions.postsFromPairs(outpostList.get(this.id));
       board = new Board(grid) ;
-			//gridSquares = Conversions.gridSquaresFromPoints(grid);
 
 			boolean newSeason = (turn % 10 == 0);
 			ArrayList<Post> newPosts = strategy.move(oldPosts, newSeason);
