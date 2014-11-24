@@ -20,7 +20,7 @@ public class Player extends outpost.sim.Player {
 	public Player(int id) {
 		super(id);
 
-		this.strategy = new AggressiveDefensiveStrategy();
+		this.strategy = new UtilityMaxStrategy();
 
 		this.turn = 0;
 	}
