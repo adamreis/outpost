@@ -20,20 +20,9 @@ public class Player extends outpost.sim.Player {
 	public Player(int id) {
 		super(id);
 
-		switch (id) {
-		case 0: this.baseLoc = new Location(0,0);
-		break;
-		case 1: this.baseLoc = new Location(SIZE-1, 0);
-		break;
-		case 2: this.baseLoc = new Location(SIZE-1, SIZE-1);
-		break;
-		case 3: this.baseLoc = new Location(0, SIZE-1);
-		break;
-		}
+		this.strategy = new AggressiveDefensiveStrategy();
 
-		strategy = new AggressiveDefensiveStrategy();
-
-		turn = 0;
+		this.turn = 0;
 	}
 
 
@@ -51,8 +40,9 @@ public class Player extends outpost.sim.Player {
 	}
 
 	public ArrayList<movePair> move(ArrayList<ArrayList<Pair>> outpostList, Point[] grid, int r, int L, int W, int T) {
-		if (this.parameters == null) {
-			this.parameters = new GameParameters(r, L, W, T, SIZE);
+		if (Player.parameters == null) {
+			this.baseLoc = new Location(outpostList.get(this.id).get(0));
+			Player.parameters = new GameParameters(r, L, W, T, SIZE);
 		}
 
 		// perform conversions to sane classes

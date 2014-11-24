@@ -20,7 +20,7 @@ public class Post extends Location {
 	}
 
 	public Post(Pair p, int id) {
-		super(p.x, p.y);
+		super(p);
 		this.id = id;
 	}
 

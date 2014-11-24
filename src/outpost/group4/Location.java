@@ -2,6 +2,8 @@ package outpost.group4;
 
 import java.util.*;
 
+import outpost.sim.Pair;
+
 public class Location {
 	public int x;
 	public int y;
@@ -15,6 +17,11 @@ public class Location {
 	public Location(Location location) {
 		this.x = location.x;
 		this.y = location.y;
+	}
+	
+	public Location(Pair p) {
+		this.x = p.x;
+		this.y = p.y;
 	}
 
 	@Override
