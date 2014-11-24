@@ -39,7 +39,7 @@ public abstract class BoardHeuristic {
 
         Collections.sort(squares, new Comparator<GridSquare>() {
             public int compare(GridSquare one, GridSquare other) {
-                return Double.compare(score(one), score(other));
+                return Double.compare(score(other), score(one)); // do it opposite to get descending
             }
         });
 

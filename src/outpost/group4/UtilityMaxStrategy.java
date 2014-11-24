@@ -7,7 +7,7 @@ public class UtilityMaxStrategy implements Strategy {
     ArrayList<Post> posts;
     ArrayList<GridSquare> bestSquares;
 
-    public ArrayList<Post> move(ArrayList<Post> posts, boolean newSeason) {
+    public ArrayList<Post> move(ArrayList<ArrayList<Post>> masterList, ArrayList<Post> posts, boolean newSeason) {
         this.posts = posts;
 
         ArrayList<Post> newPosts = new ArrayList<Post>();
