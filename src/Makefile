@@ -1,4 +1,4 @@
-MAP=map0
+MAP=mapOriginBlob
 PLAYER0=dumb
 PLAYER1=dumb
 PLAYER2=dumb

@@ -34,7 +34,15 @@ public class Board {
                 otherPlayerPosts.add(posts);
             }
 
-            ownersMap.put(i, new HashSet<Post>(posts));
+            HashSet controlledSet = new HashSet(posts);
+            for (Post post : posts) {
+                ArrayList<GridSquare> controlledTerritory = squaresWithinRadius(post);
+                for (GridSquare square : controlledTerritory) {
+                  controlledSet.add(square);
+                }
+            }
+
+            ownersMap.put(i, controlledSet);
         }
     }
 
@@ -69,7 +77,7 @@ public class Board {
         return filteredSquares;
     }
 
-    public ArrayList<GridSquare> squaresWithinRadius(GridSquare square) {
+    public ArrayList<GridSquare> squaresWithinRadius(Location square) {
         ArrayList<GridSquare> squares = new ArrayList<GridSquare>();
 
         int size = Player.parameters.size;

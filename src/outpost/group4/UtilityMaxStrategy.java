@@ -18,7 +18,6 @@ public class UtilityMaxStrategy implements Strategy {
 
         if (newSeason) {
             bestSquares = heuristic.getBestSquares();
-            System.out.println(bestSquares.size());
 
             // sort bestSquares by closeness to baseLoc
             Collections.sort(bestSquares, new Comparator<GridSquare>() {
