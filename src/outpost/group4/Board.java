@@ -30,7 +30,7 @@ public class Board {
         return squares;
     }
 
-    public ArrayList<GridSquare> availableTerritory(GridSquare square) {
+    public ArrayList<GridSquare> filteredSquaresWithinRadius(GridSquare square, GridSquareFilter filter) {
         ArrayList<GridSquare> availableSquares = new ArrayList<GridSquare>();
 
         int size = Player.parameters.size;
@@ -43,7 +43,7 @@ public class Board {
                     if (i + j != dist || x < 0 || y < 0 || x >= size || y >= size) continue;
 
                     GridSquare temp = board[x][y];
-                    if (!temp.water && temp.owners.size() == 0) {
+                    if (filter.squareIsValid(temp)) {
                         availableSquares.add(temp);
                     }
                 }
