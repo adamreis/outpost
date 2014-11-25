@@ -9,11 +9,33 @@ import outpost.sim.movePair;
 public class Board {
 
     public GridSquare[][] board;
+
+    public ArrayList<ArrayList<Post>> masterPosts;
+    public ArrayList<ArrayList<Post>> otherPlayerPosts;
     public HashMap<Integer, HashSet<? extends Location>> ownersMap;
 
     public Board(Point[] points, HashMap<Integer, HashSet<? extends Location>> map) {
         board = Conversions.gridSquaresFromPoints(points);
         ownersMap = map;
+    }
+
+    public Board(ArrayList<ArrayList<Pair>> outpostList, Point[] grid) {
+        board = Conversions.gridSquaresFromPoints(grid);
+
+        // perform conversions to custom classes
+        ownersMap = new HashMap<Integer, HashSet<? extends Location>>();
+        masterPosts = new ArrayList<ArrayList<Post>>(outpostList.size());
+        otherPlayerPosts = new ArrayList<ArrayList<Post>>(outpostList.size() - 1);
+        for (int i = 0; i < outpostList.size(); i++) {
+            ArrayList<Post> posts = Conversions.postsFromPairs(outpostList.get(i));
+            masterPosts.add(posts);
+
+            if (i != Player.knownID) {
+                otherPlayerPosts.add(posts);
+            }
+
+            ownersMap.put(i, new HashSet<Post>(posts));
+        }
     }
 
     public GridSquare[][] getGridSquares() {
@@ -67,6 +89,10 @@ public class Board {
 
     public boolean weOwnLocation(Location location) {
         return ownerOfLocation(location) == Player.knownID;
+    }
+
+    public ArrayList<Post> ourPosts() {
+        return masterPosts.get(Player.knownID);
     }
 
 }

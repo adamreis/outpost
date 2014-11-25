@@ -8,7 +8,6 @@ import outpost.sim.movePair;
 
 public class Player extends outpost.sim.Player {
 	protected static final int SIZE = 100;
-	protected static final int NUM_PLAYERS = 4;
 
 	static Random random = new Random();
 
@@ -50,32 +49,17 @@ public class Player extends outpost.sim.Player {
 			Player.parameters = new GameParameters(r, L, W, T, SIZE);
 		}
 
-		HashMap<Integer, HashSet<? extends Location>> ownersMap = new HashMap<Integer, HashSet<? extends Location>>();
-
-		// perform conversions to custom classes
-		ArrayList<ArrayList<Post>> masterPosts = new ArrayList<ArrayList<Post>>(outpostList.size());
-		ArrayList<ArrayList<Post>> otherPlayerPosts = new ArrayList<ArrayList<Post>>(outpostList.size() - 1);
-		for (int i = 0; i < outpostList.size(); i++) {
-				ArrayList<Post> posts = Conversions.postsFromPairs(outpostList.get(i));
-				masterPosts.add(posts);
-
-				if (i != this.id) {
-						otherPlayerPosts.add(posts);
-				}
-
-				ownersMap.put(i, new HashSet<Post>(posts));
-		}
-		ArrayList<Post> oldPosts = masterPosts.get(this.id);
-		board = new Board(grid, ownersMap);
+		// create the static known board
+		board = new Board(outpostList, grid);
 
 		// run the strategy
 		boolean newSeason = (turn % 10 == 0);
-		ArrayList<Post> newPosts = strategy.move(otherPlayerPosts, oldPosts, newSeason);
+		ArrayList<Post> newPosts = strategy.move(board.otherPlayerPosts, board.ourPosts(), newSeason);
 
 		// increment the turn
 		turn += 1;
 
-		// and convert back from custom classes
+		// convert back from custom classes and return
 		return Conversions.movePairsFromPosts(newPosts);
 	}
 
