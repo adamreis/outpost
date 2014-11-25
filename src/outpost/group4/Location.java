@@ -18,7 +18,7 @@ public class Location {
 		this.x = location.x;
 		this.y = location.y;
 	}
-	
+
 	public Location(Pair p) {
 		this.x = p.x;
 		this.y = p.y;
@@ -130,9 +130,8 @@ public class Location {
 		Set<Location> visited = new HashSet<Location>();
 		LinkedList<ArrayList<Location>> q = new LinkedList<ArrayList<Location>>();
 
-		System.out.println("this: " + this);
 		visited.add(this);
-		
+
 		ArrayList<Location> basePath = new ArrayList<Location>();
 		basePath.add(this);
 		q.add(basePath);

@@ -9,13 +9,25 @@ import outpost.sim.movePair;
 public class Board {
 
     public GridSquare[][] board;
-    
+
     public Board(Point[] points) {
         board = Conversions.gridSquaresFromPoints(points);
     }
 
     public GridSquare[][] getGridSquares() {
         return board;
+    }
+
+    public ArrayList<GridSquare> getGridSquaresList() {
+        ArrayList<GridSquare> squares = new ArrayList<GridSquare>();
+
+        for (GridSquare[] rowArray : board) {
+            for (GridSquare square : rowArray) {
+                squares.add(square);
+            }
+        }
+
+        return squares;
     }
 
     public ArrayList<GridSquare> availableTerritory(GridSquare square) {
@@ -33,32 +45,12 @@ public class Board {
                     GridSquare temp = board[x][y];
                     if (!temp.water && temp.owners.size() == 0) {
                         availableSquares.add(temp);
-                    } 
-                }
-            } 
-        }
-        return availableSquares;
-    }
-
-    public ArrayList<GridSquare> getBestSquares() {
-        ArrayList<GridSquare> bestSquares = new ArrayList<GridSquare>();
-
-        int maxTerritory = 0;
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                int currTerritory = availableTerritory(board[i][j]).size();
-                if (currTerritory > maxTerritory) {
-                    maxTerritory = currTerritory;
-                    bestSquares.clear();
-                    bestSquares.add(board[i][j]);
-                } else if (currTerritory == maxTerritory) {
-                    bestSquares.add(board[i][j]);
+                    }
                 }
             }
         }
 
-        return bestSquares;
+        return availableSquares;
     }
 
 }
-

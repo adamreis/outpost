@@ -5,16 +5,18 @@ import java.util.*;
 public class UtilityMaxStrategy implements Strategy {
 
     ArrayList<Post> posts;
+    ArrayList<ArrayList<Post>> otherPlayerPosts;
     ArrayList<GridSquare> bestSquares;
 
-    public ArrayList<Post> move(ArrayList<Post> posts, boolean newSeason) {
+    public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {
         this.posts = posts;
+        this.otherPlayerPosts = otherPlayerPosts;
 
         ArrayList<Post> newPosts = new ArrayList<Post>();
-        Board board = Player.board;
-        
+        BoardHeuristic heuristic = new TerritorialGainNearBaseHeuristic(Player.board);
+
         if (newSeason) {
-            bestSquares = board.getBestSquares();
+            bestSquares = heuristic.getBestSquares();
 
             // sort bestSquares by closeness to baseLoc
             Collections.sort(bestSquares, new Comparator<GridSquare>() {
@@ -28,8 +30,8 @@ public class UtilityMaxStrategy implements Strategy {
                     }
                 }
             });
-        } 
-     
+        }
+
         for (int i = 0; i < posts.size(); i++) {
             Post p = posts.get(i);
 
@@ -48,13 +50,36 @@ public class UtilityMaxStrategy implements Strategy {
             //ArrayList<Location> path = p.shortestPathToLocation((Location) bestSquares.get(0));
 
             Post newPost = p;
-            ArrayList<Location> path = p.shortestPathToLocation((Location) bestSquares.get((i * Player.parameters.outpostRadius) % bestSquares.size()));
-            newPost.x = path.get(1).x;
-            newPost.y = path.get(1).y;
+
+            Post emergency = emergencyMove(p);
+            if (emergency != null) {
+                newPost = emergency;
+            }
+            else {
+                int squareIndex = (i * Player.parameters.outpostRadius) % bestSquares.size();
+                ArrayList<Location> path = p.shortestPathToLocation(bestSquares.get(squareIndex));
+
+                int nextLocationIndex = (path.size() > 1)? 1 : 0;
+                newPost.x = path.get(nextLocationIndex).x;
+                newPost.y = path.get(nextLocationIndex).y;
+            }
+
             newPosts.add(newPost);
         }
 
         return newPosts;
     }
-}
 
+    public Post emergencyMove(Post p) {
+        for (ArrayList<Post> posts : otherPlayerPosts) {
+            for (Post opponentPost : posts) {
+                if (p.isLocationUnderInfluence(opponentPost)) {
+                    System.out.printf("EMERGENCY!!!! %s vsvsvsvsvsvs %s\n", p, opponentPost);
+                    return p.moveMaximizingDistanceFrom(opponentPost);
+                }
+            }
+        }
+
+        return null;
+    }
+}

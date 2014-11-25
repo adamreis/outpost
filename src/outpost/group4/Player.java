@@ -39,20 +39,34 @@ public class Player extends outpost.sim.Player {
 	}
 
 	public ArrayList<movePair> move(ArrayList<ArrayList<Pair>> outpostList, Point[] grid, int r, int L, int W, int T) {
+		// initialize the goods if necessary
 		if (Player.parameters == null) {
 			baseLoc = new Location(outpostList.get(this.id).get(0));
 			Player.parameters = new GameParameters(r, L, W, T, SIZE);
 		}
 
-		// perform conversions to sane classes
-		ArrayList<Post> oldPosts = Conversions.postsFromPairs(outpostList.get(this.id));
-		board = new Board(grid) ;
+		// perform conversions to custom classes
+		ArrayList<ArrayList<Post>> masterPosts = new ArrayList<ArrayList<Post>>(outpostList.size());
+		ArrayList<ArrayList<Post>> otherPlayerPosts = new ArrayList<ArrayList<Post>>(outpostList.size() - 1);
+		for (int i = 0; i < outpostList.size(); i++) {
+				ArrayList<Post> posts = Conversions.postsFromPairs(outpostList.get(i));
+				masterPosts.add(posts);
 
+				if (i != this.id) {
+						otherPlayerPosts.add(posts);
+				}
+		}
+		ArrayList<Post> oldPosts = masterPosts.get(this.id);
+		board = new Board(grid);
+
+		// run the strategy
 		boolean newSeason = (turn % 10 == 0);
-		ArrayList<Post> newPosts = strategy.move(oldPosts, newSeason);
+		ArrayList<Post> newPosts = strategy.move(otherPlayerPosts, oldPosts, newSeason);
 
+		// increment the turn
 		turn += 1;
 
+		// and convert back from custom classes
 		return Conversions.movePairsFromPosts(newPosts);
 	}
 

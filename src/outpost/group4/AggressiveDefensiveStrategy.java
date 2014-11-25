@@ -6,7 +6,7 @@ public class AggressiveDefensiveStrategy implements Strategy {
 
     ArrayList<Post> posts;
 
-    public ArrayList<Post> move(ArrayList<Post> posts, boolean newSeason) {
+    public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {
       this.posts = posts;
 
       ArrayList<Post> newPosts = new ArrayList<Post>();
