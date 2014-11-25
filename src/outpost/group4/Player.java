@@ -7,18 +7,22 @@ import outpost.sim.Point;
 import outpost.sim.movePair;
 
 public class Player extends outpost.sim.Player {
-	private static final int SIZE = 100;
+	protected static final int SIZE = 100;
 
 	static Random random = new Random();
 
-	public static Location baseLoc;
 	private Strategy strategy;
+	protected int turn;
+
+	protected static Location baseLoc;
 	protected static GameParameters parameters;
 	protected static Board board;
-	private int turn;
+	protected static int knownID;
 
 	public Player(int id) {
 		super(id);
+
+		knownID = id;
 
 		this.strategy = new UtilityMaxStrategy();
 
@@ -45,28 +49,17 @@ public class Player extends outpost.sim.Player {
 			Player.parameters = new GameParameters(r, L, W, T, SIZE);
 		}
 
-		// perform conversions to custom classes
-		ArrayList<ArrayList<Post>> masterPosts = new ArrayList<ArrayList<Post>>(outpostList.size());
-		ArrayList<ArrayList<Post>> otherPlayerPosts = new ArrayList<ArrayList<Post>>(outpostList.size() - 1);
-		for (int i = 0; i < outpostList.size(); i++) {
-				ArrayList<Post> posts = Conversions.postsFromPairs(outpostList.get(i));
-				masterPosts.add(posts);
-
-				if (i != this.id) {
-						otherPlayerPosts.add(posts);
-				}
-		}
-		ArrayList<Post> oldPosts = masterPosts.get(this.id);
-		board = new Board(grid);
+		// create the static known board
+		board = new Board(outpostList, grid);
 
 		// run the strategy
 		boolean newSeason = (turn % 10 == 0);
-		ArrayList<Post> newPosts = strategy.move(otherPlayerPosts, oldPosts, newSeason);
+		ArrayList<Post> newPosts = strategy.move(board.otherPlayerPosts, board.ourPosts(), newSeason);
 
 		// increment the turn
 		turn += 1;
 
-		// and convert back from custom classes
+		// convert back from custom classes and return
 		return Conversions.movePairsFromPosts(newPosts);
 	}
 

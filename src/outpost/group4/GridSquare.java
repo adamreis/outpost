@@ -27,5 +27,5 @@ public class GridSquare extends Location {
 		this.distance = distance;
 		this.owners = owners;
 	}
-
+	
 }

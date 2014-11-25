@@ -13,10 +13,12 @@ public class UtilityMaxStrategy implements Strategy {
         this.otherPlayerPosts = otherPlayerPosts;
 
         ArrayList<Post> newPosts = new ArrayList<Post>();
-        BoardHeuristic heuristic = new TerritorialGainNearBaseHeuristic(Player.board);
+        BoardHeuristic waterHeuristic = new MaxWaterHeuristic(Player.board);
+        BoardHeuristic heuristic = new DistanceWeighingHeuristic(waterHeuristic);
 
         if (newSeason) {
             bestSquares = heuristic.getBestSquares();
+            System.out.println(bestSquares.size());
 
             // sort bestSquares by closeness to baseLoc
             Collections.sort(bestSquares, new Comparator<GridSquare>() {
