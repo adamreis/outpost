@@ -7,18 +7,23 @@ import outpost.sim.Point;
 import outpost.sim.movePair;
 
 public class Player extends outpost.sim.Player {
-	private static final int SIZE = 100;
+	protected static final int SIZE = 100;
+	protected static final int NUM_PLAYERS = 4;
 
 	static Random random = new Random();
 
-	public static Location baseLoc;
 	private Strategy strategy;
+	protected int turn;
+
+	protected static Location baseLoc;
 	protected static GameParameters parameters;
 	protected static Board board;
-	private int turn;
+	protected static int knownID;
 
 	public Player(int id) {
 		super(id);
+
+		knownID = id;
 
 		this.strategy = new UtilityMaxStrategy();
 
@@ -45,6 +50,8 @@ public class Player extends outpost.sim.Player {
 			Player.parameters = new GameParameters(r, L, W, T, SIZE);
 		}
 
+		HashMap<Integer, HashSet<? extends Location>> ownersMap = new HashMap<Integer, HashSet<? extends Location>>();
+
 		// perform conversions to custom classes
 		ArrayList<ArrayList<Post>> masterPosts = new ArrayList<ArrayList<Post>>(outpostList.size());
 		ArrayList<ArrayList<Post>> otherPlayerPosts = new ArrayList<ArrayList<Post>>(outpostList.size() - 1);
@@ -55,9 +62,11 @@ public class Player extends outpost.sim.Player {
 				if (i != this.id) {
 						otherPlayerPosts.add(posts);
 				}
+
+				ownersMap.put(i, new HashSet<Post>(posts));
 		}
 		ArrayList<Post> oldPosts = masterPosts.get(this.id);
-		board = new Board(grid);
+		board = new Board(grid, ownersMap);
 
 		// run the strategy
 		boolean newSeason = (turn % 10 == 0);

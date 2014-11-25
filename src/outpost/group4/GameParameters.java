@@ -8,6 +8,8 @@ import outpost.sim.movePair;
 
 public class GameParameters {
 
+		public static final int NUM_PLAYERS = 4;
+
 		public int outpostRadius;
 		public int requiredLand;
 		public int requiredWater;

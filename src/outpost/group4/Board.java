@@ -9,9 +9,11 @@ import outpost.sim.movePair;
 public class Board {
 
     public GridSquare[][] board;
+    public HashMap<Integer, HashSet<? extends Location>> ownersMap;
 
-    public Board(Point[] points) {
+    public Board(Point[] points, HashMap<Integer, HashSet<? extends Location>> map) {
         board = Conversions.gridSquaresFromPoints(points);
+        ownersMap = map;
     }
 
     public GridSquare[][] getGridSquares() {
@@ -51,6 +53,20 @@ public class Board {
         }
 
         return availableSquares;
+    }
+
+    public int ownerOfLocation(Location location) {
+        for (int i = 0; i < GameParameters.NUM_PLAYERS; i++) {
+            if (ownersMap.get(i).contains(location)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public boolean weOwnLocation(Location location) {
+        return ownerOfLocation(location) == Player.knownID;
     }
 
 }
