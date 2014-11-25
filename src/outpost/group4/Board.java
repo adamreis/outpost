@@ -55,7 +55,22 @@ public class Board {
     }
 
     public ArrayList<GridSquare> filteredSquaresWithinRadius(GridSquare square, GridSquareFilter filter) {
-        ArrayList<GridSquare> availableSquares = new ArrayList<GridSquare>();
+        ArrayList<GridSquare> possibleSquares = squaresWithinRadius(square);
+        return filteredSquaresWithinRadius(possibleSquares, filter);
+    }
+
+    public ArrayList<GridSquare> filteredSquaresWithinRadius(ArrayList<GridSquare> possibleSquares, GridSquareFilter filter) {
+        ArrayList<GridSquare> filteredSquares = new ArrayList<GridSquare>();
+        for (GridSquare gridSquare : possibleSquares) {
+            if (filter.squareIsValid(gridSquare)) {
+                filteredSquares.add(gridSquare);
+            }
+        }
+        return filteredSquares;
+    }
+
+    public ArrayList<GridSquare> squaresWithinRadius(GridSquare square) {
+        ArrayList<GridSquare> squares = new ArrayList<GridSquare>();
 
         int size = Player.parameters.size;
         int radius = Player.parameters.outpostRadius;
@@ -66,25 +81,25 @@ public class Board {
                     int y = square.y + j;
                     if (i + j != dist || x < 0 || y < 0 || x >= size || y >= size) continue;
 
-                    GridSquare temp = board[x][y];
-                    if (filter.squareIsValid(temp)) {
-                        availableSquares.add(temp);
-                    }
+                    squares.add(board[x][y]);
                 }
             }
         }
 
-        return availableSquares;
+        return squares;
     }
 
     public int ownerOfLocation(Location location) {
+        int owner = -1;
+
         for (int i = 0; i < GameParameters.NUM_PLAYERS; i++) {
             if (ownersMap.get(i).contains(location)) {
-                return i;
+                owner = i;
+                break;
             }
         }
 
-        return -1;
+        return owner;
     }
 
     public boolean weOwnLocation(Location location) {
