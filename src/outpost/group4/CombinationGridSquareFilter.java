@@ -7,6 +7,10 @@ public class CombinationGridSquareFilter implements GridSquareFilter {
 
     public List<GridSquareFilter> filters;
 
+    public CombinationGridSquareFilter(GridSquareFilter... filters) {
+        this(Arrays.asList(filters));
+    }
+
     public CombinationGridSquareFilter(List<GridSquareFilter> filters) {
         this.filters = filters;
     }
@@ -19,6 +23,14 @@ public class CombinationGridSquareFilter implements GridSquareFilter {
         }
 
         return true;
+    }
+
+    public String toString() {
+        String s = "(";
+        for (GridSquareFilter filter : filters) {
+            s += filter.toString() + ", ";
+        }
+        return s + ")";
     }
 
 }

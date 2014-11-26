@@ -14,6 +14,14 @@ public class UtilityMaxStrategy implements Strategy {
       seasonCount = 0;
     }
 
+    public int delete(ArrayList<Post> posts, GridSquare[][] board) {
+        Post nearestPost = (Post) Player.baseLoc.nearestLocation(posts);
+        int del = posts.indexOf(nearestPost);
+        if (del < 0) del = Player.random.nextInt(posts.size());
+
+        return del;
+    }
+
     public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {
         this.posts = posts;
         this.otherPlayerPosts = otherPlayerPosts;

@@ -53,6 +53,19 @@ public class Board {
         return board;
     }
 
+    public GridSquare randomLandSquare() {
+        GridSquare square = null;
+        while (square == null) {
+            int x = Player.random.nextInt(Player.SIZE);
+            int y = Player.random.nextInt(Player.SIZE);
+            GridSquare temp = board[x][y];
+            if (!temp.water) {
+                square = temp;
+            }
+        }
+        return square;
+    }
+
     public ArrayList<GridSquare> getGridSquaresList() {
         ArrayList<GridSquare> squares = new ArrayList<GridSquare>();
 
@@ -74,7 +87,7 @@ public class Board {
         return filteredSquares(possibleSquares, filter);
     }
 
-    public ArrayList<GridSquare> filteredSquares(ArrayList<GridSquare> possibleSquares, GridSquareFilter filter) {
+    public static ArrayList<GridSquare> filteredSquares(ArrayList<GridSquare> possibleSquares, GridSquareFilter filter) {
         ArrayList<GridSquare> filteredSquares = new ArrayList<GridSquare>();
         for (GridSquare gridSquare : possibleSquares) {
             if (filter.squareIsValid(gridSquare)) {

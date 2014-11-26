@@ -19,6 +19,14 @@ public class GreedyResourceStrategy implements Strategy {
         seasonCount = 0;
     }
 
+    public int delete(ArrayList<Post> posts, GridSquare[][] board) {
+        Post nearestPost = (Post) Player.baseLoc.nearestLocation(posts);
+        int del = posts.indexOf(nearestPost);
+        if (del < 0) del = Player.random.nextInt(posts.size());
+
+        return del;
+    }
+
     public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {
         if (newSeason) {
             seasonCount += 1;
@@ -29,11 +37,8 @@ public class GreedyResourceStrategy implements Strategy {
         }
 
         WithinThresholdGridSquareFilter thresholdFilter = new WithinThresholdGridSquareFilter(Player.baseLoc, threshold());
-        GridSquareFilter notWaterFilter = new NegationGridSquareFilter(new WaterGridSquareFilter());
-        ArrayList<GridSquareFilter> filters = new ArrayList<GridSquareFilter>();
-        filters.add(thresholdFilter);
-        filters.add(notWaterFilter);
-        squaresWithinThresold = Player.board.filteredSquares(new CombinationGridSquareFilter(filters));
+        CombinationGridSquareFilter filter = new CombinationGridSquareFilter(thresholdFilter, landFilter);
+        squaresWithinThresold = Player.board.filteredSquares(filter);
 
         ArrayList<Post> newPosts = new ArrayList<Post>();
         for (Post p : posts) {
