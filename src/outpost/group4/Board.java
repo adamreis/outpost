@@ -111,13 +111,12 @@ public class Board {
                 for (int j = -dist; j <= dist; j++) {
                     int x = square.x + i;
                     int y = square.y + j;
-                    if (i + j != dist || x < 0 || y < 0 || x >= size || y >= size) continue;
-
+                    if (Math.abs(square.x - x) + Math.abs(square.y - y) != radius || x < 0 || y < 0 || x >= size || y >= size) continue;
+        
                     squares.add(board[x][y]);
                 }
             }
         }
-
         return squares;
     }
 

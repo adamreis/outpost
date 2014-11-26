@@ -71,11 +71,13 @@ public class StagePlanningStrategy implements Strategy {
         // add the water collectors
         if (targetLocations.size() < waterCollectorCount) {
             ArrayList<GridSquare> squaresInQuadrant = Player.board.filteredSquares(validQuadrantTerritoriesFilter);
-            ArrayList<GridSquare> bestWaterCellsInQuadrant = mostValuableCells(waterCollectorCount, squaresInQuadrant, waterFilter, false);
+            ArrayList<GridSquare> bestWaterCellsInQuadrant = mostValuableCells(waterCollectorCount, squaresInQuadrant, waterFilter, p, false);
             for (int i = 0; i < bestWaterCellsInQuadrant.size(); i++) {
+                System.out.println(bestWaterCellsInQuadrant.get(i));
                 GridSquare target = bestWaterCellsInQuadrant.get(i);
                 updateTargetAtIndex(i, target);
             }
+            System.out.println("\n");
         }
 
         // add the base protectors
@@ -195,7 +197,7 @@ public class StagePlanningStrategy implements Strategy {
         return shells;
     }
 
-    private ArrayList<GridSquare> mostValuableCells(int count, ArrayList<GridSquare> possibleCells, GridSquareFilter valueFilter, boolean useCurrentlyControlledLand) {
+    private ArrayList<GridSquare> mostValuableCells(int count, ArrayList<GridSquare> possibleCells, GridSquareFilter valueFilter, Post currPost, boolean useCurrentlyControlledLand) {
         ArrayList<GridSquare> mostValuableCells = new ArrayList<GridSquare>(count);
         boolean[][] controlledLocations = new boolean[Player.SIZE][Player.SIZE];
 
@@ -214,8 +216,13 @@ public class StagePlanningStrategy implements Strategy {
                 int score = 0;
                 ArrayList<GridSquare> surroundingCells = Player.board.filteredSquaresWithinRadius(square, valueFilter);
                 for (GridSquare temp : surroundingCells) {
-                    if (controlledLocations[temp.x][temp.y]) continue;
-                    score += 1;
+                    if (Player.board.squaresWithinRadius(p).contains(temp)) {
+                      score += 1;
+                    } else if (controlledLocations[temp.x][temp.y]) {
+                      continue;
+                    } else {
+                      score += 1;
+                    }
                 }
 
                 if (score > bestScore) {
@@ -235,4 +242,48 @@ public class StagePlanningStrategy implements Strategy {
         return mostValuableCells;
     }
 
+    private ArrayList<GridSquare> mostValuableCells(int count, ArrayList<GridSquare> possibleCells, GridSquareFilter valueFilter, Post currPost, boolean useCurrentlyControlledLand) {
+        ArrayList<GridSquare> mostValuableCells = new ArrayList<GridSquare>(count);
+        boolean[][] controlledLocations = new boolean[Player.SIZE][Player.SIZE];
+
+        if (useCurrentlyControlledLand) {
+            for(int i = 0; i < currentlyControlledLand.length; i++) {
+                controlledLocations[i] = currentlyControlledLand[i].clone();
+            }
+        }
+
+        for (int i = 0; i < count; i++) {
+            int bestScore = 0;
+            GridSquare bestSquare = null;
+            for (GridSquare square : possibleCells) {
+                if (controlledLocations[square.x][square.x]) continue;
+
+                int score = 0;
+                ArrayList<GridSquare> surroundingCells = Player.board.filteredSquaresWithinRadius(square, valueFilter);
+                for (GridSquare temp : surroundingCells) {
+                    if (Player.board.squaresWithinRadius(p).contains(temp)) {
+                      score += 1;
+                    } else if (controlledLocations[temp.x][temp.y]) {
+                      continue;
+                    } else {
+                      score += 1;
+                    }
+                }
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestSquare = square;
+                }
+            }
+
+            mostValuableCells.add(bestSquare);
+            controlledLocations[bestSquare.x][bestSquare.y] = true;
+            ArrayList<GridSquare> surroundingCells = Player.board.filteredSquaresWithinRadius(bestSquare, valueFilter);
+            for (GridSquare square : surroundingCells) {
+                controlledLocations[square.x][square.y] = true;
+            }
+        }
+
+        return mostValuableCells;
+    }
 }
