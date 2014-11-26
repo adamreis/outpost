@@ -131,7 +131,7 @@ public class GreedyResourceStrategy implements Strategy {
     public int combinedScore(ArrayList<Post> posts) {
         int landScore = targetedLandCount(posts);
 
-        int waterValue = (int) (Player.parameters.landWaterRatio() * 2);
+        int waterValue = (int) (Player.parameters.landWaterRatio() * 0.5);
         int waterScore = targetedWaterCount(posts) * waterValue;
 
         return landScore + waterScore;
