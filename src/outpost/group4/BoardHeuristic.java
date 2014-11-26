@@ -34,6 +34,11 @@ public abstract class BoardHeuristic {
         return bestSquares;
     }
 
+    public List<GridSquare> getTopSquares(int count) {
+        List<GridSquare> topSquares = getSortedSquares().subList(0, count);
+        return topSquares;
+    }
+
     public ArrayList<GridSquare> getSortedSquares() {
         ArrayList<GridSquare> squares = board.getGridSquaresList();
 

@@ -13,6 +13,7 @@ public class Board {
     public ArrayList<ArrayList<Post>> masterPosts;
     public ArrayList<ArrayList<Post>> otherPlayerPosts;
     public HashMap<Integer, HashSet<? extends Location>> ownersMap;
+    public HashSet<Location> targetedOwnerships;
 
     public Board(Point[] points, HashMap<Integer, HashSet<? extends Location>> map) {
         board = Conversions.gridSquaresFromPoints(points);
@@ -22,8 +23,10 @@ public class Board {
     public Board(ArrayList<ArrayList<Pair>> outpostList, Point[] grid) {
         board = Conversions.gridSquaresFromPoints(grid);
 
-        // perform conversions to custom classes
         ownersMap = new HashMap<Integer, HashSet<? extends Location>>();
+        targetedOwnerships = new HashSet<Location>();
+
+        // perform conversions to custom classes
         masterPosts = new ArrayList<ArrayList<Post>>(outpostList.size());
         otherPlayerPosts = new ArrayList<ArrayList<Post>>(outpostList.size() - 1);
         for (int i = 0; i < outpostList.size(); i++) {
@@ -38,7 +41,7 @@ public class Board {
             for (Post post : posts) {
                 ArrayList<GridSquare> controlledTerritory = squaresWithinRadius(post);
                 for (GridSquare square : controlledTerritory) {
-                  controlledSet.add(square);
+                    controlledSet.add(square);
                 }
             }
 
@@ -48,6 +51,19 @@ public class Board {
 
     public GridSquare[][] getGridSquares() {
         return board;
+    }
+
+    public GridSquare randomLandSquare() {
+        GridSquare square = null;
+        while (square == null) {
+            int x = Player.random.nextInt(Player.SIZE);
+            int y = Player.random.nextInt(Player.SIZE);
+            GridSquare temp = board[x][y];
+            if (!temp.water) {
+                square = temp;
+            }
+        }
+        return square;
     }
 
     public ArrayList<GridSquare> getGridSquaresList() {
@@ -62,12 +78,16 @@ public class Board {
         return squares;
     }
 
-    public ArrayList<GridSquare> filteredSquaresWithinRadius(GridSquare square, GridSquareFilter filter) {
-        ArrayList<GridSquare> possibleSquares = squaresWithinRadius(square);
-        return filteredSquaresWithinRadius(possibleSquares, filter);
+    public GridSquare gridSquareWithLocation(Location location) {
+        return board[location.x][location.y];
     }
 
-    public ArrayList<GridSquare> filteredSquaresWithinRadius(ArrayList<GridSquare> possibleSquares, GridSquareFilter filter) {
+    public ArrayList<GridSquare> filteredSquaresWithinRadius(Location location, GridSquareFilter filter) {
+        ArrayList<GridSquare> possibleSquares = squaresWithinRadius(location);
+        return filteredSquares(possibleSquares, filter);
+    }
+
+    public static ArrayList<GridSquare> filteredSquares(ArrayList<GridSquare> possibleSquares, GridSquareFilter filter) {
         ArrayList<GridSquare> filteredSquares = new ArrayList<GridSquare>();
         for (GridSquare gridSquare : possibleSquares) {
             if (filter.squareIsValid(gridSquare)) {
@@ -75,6 +95,10 @@ public class Board {
             }
         }
         return filteredSquares;
+    }
+
+    public ArrayList<GridSquare> filteredSquares(GridSquareFilter filter) {
+        return filteredSquares(getGridSquaresList(), filter);
     }
 
     public ArrayList<GridSquare> squaresWithinRadius(Location square) {
@@ -87,13 +111,12 @@ public class Board {
                 for (int j = -dist; j <= dist; j++) {
                     int x = square.x + i;
                     int y = square.y + j;
-                    if (i + j != dist || x < 0 || y < 0 || x >= size || y >= size) continue;
-
+                    if (Math.abs(square.x - x) + Math.abs(square.y - y) != radius || x < 0 || y < 0 || x >= size || y >= size) continue;
+        
                     squares.add(board[x][y]);
                 }
             }
         }
-
         return squares;
     }
 
@@ -114,8 +137,25 @@ public class Board {
         return ownerOfLocation(location) == Player.knownID;
     }
 
+    public boolean weWillOwnLocation(Location location) {
+        if (weOwnLocation(location)) return true;
+
+        if (targetedOwnerships.contains(location)) return true;
+
+        return false;
+    }
+
     public ArrayList<Post> ourPosts() {
         return masterPosts.get(Player.knownID);
+    }
+
+    public void addTargetSquareOwnership(Location location) {
+        targetedOwnerships.add(location);
+
+        ArrayList<GridSquare> controlledTerritory = squaresWithinRadius(location);
+        for (GridSquare square : controlledTerritory) {
+            targetedOwnerships.add(square);
+        }
     }
 
 }

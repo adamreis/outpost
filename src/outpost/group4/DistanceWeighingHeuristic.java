@@ -12,30 +12,31 @@ public class DistanceWeighingHeuristic extends BoardHeuristic {
     public BoardHeuristic heuristicToMinimize;
     public double weightingFactor;
     public int numberOfBuckets;
-    public boolean verbose;
+    public int threshold;
 
-    public DistanceWeighingHeuristic(BoardHeuristic heuristic) {
+    public DistanceWeighingHeuristic(BoardHeuristic heuristic, int threshold) {
         super(heuristic.board);
 
-        heuristicToMinimize = heuristic;
-        weightingFactor = DEFAULT_WEIGHTING_FACTOR;
-        numberOfBuckets = DEFAULT_NUMBER_OF_BUCKETS;
-
-        verbose = false;
+        this.heuristicToMinimize = heuristic;
+        this.weightingFactor = DEFAULT_WEIGHTING_FACTOR;
+        this.numberOfBuckets = DEFAULT_NUMBER_OF_BUCKETS;
+        this.threshold = threshold;
     }
 
     public double score(GridSquare square) {
         double s = heuristicToMinimize.score(square);
+        return weightScore(s, square);
+    }
 
-        double dist = Location.distanceTo(square, Player.baseLoc);
+    public double weightScore(double score, Location location) {
+      if (Player.baseLoc.withinThreshold(location, threshold)) { // our quadrant, full score
+        return score;
+      }
+      else { // other quadrent, weight by bucket.
+        double dist = Location.distance(location, Player.baseLoc);
         int bucket = (int) ((dist / MAX_DIST) * numberOfBuckets);
-
-        if (bucket <= numberOfBuckets / 4 + 1) { // our quadrant, full score
-            return s;
-        }
-        else { // other quadrent, weight by bucket.
-            double factor = 1 - bucket * weightingFactor;
-            return s * factor;
-        }
+        double factor = 1 - bucket * weightingFactor;
+        return score * factor;
+      }
     }
 }

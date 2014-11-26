@@ -6,7 +6,7 @@ import java.util.*;
 public class WaterGridSquareFilter implements GridSquareFilter {
 
     public boolean squareIsValid(GridSquare square) {
-        return square.water && !Player.board.weOwnLocation(square);
+        return square.water;
     }
 
 }

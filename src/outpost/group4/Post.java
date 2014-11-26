@@ -8,6 +8,7 @@ import outpost.sim.movePair;
 
 public class Post extends Location {
 	public int id;
+	public Location target;
 
 	public Post(Location loc, int id) {
 		super(loc.x, loc.y);
@@ -22,6 +23,21 @@ public class Post extends Location {
 	public Post(Pair p, int id) {
 		super(p);
 		this.id = id;
+	}
+
+	public Post(Post p) {
+			super(p.x, p.y);
+			this.id = p.id;
+	}
+
+	public Post copy() {
+			return new Post(this);
+	}
+
+	public void update(Post p) {
+			this.x = p.x;
+			this.y = p.y;
+			this.id = p.id;
 	}
 
 	public String toString() {
@@ -119,7 +135,7 @@ public class Post extends Location {
 		ArrayList<Post> possibleMoves = adjacentPosts();
 
 		for (Post possiblePost : possibleMoves) {
-			double dist = distanceTo(loc, possiblePost);
+			double dist = distance(loc, possiblePost);
 			if (dist < minDist) {
 				minDist = dist;
 				nearestPost = possiblePost;
@@ -135,7 +151,7 @@ public class Post extends Location {
 		ArrayList<Post> possibleMoves = adjacentPosts();
 
 		for (Post possiblePost : possibleMoves) {
-			double dist = distanceTo(loc, possiblePost);
+			double dist = distance(loc, possiblePost);
 			if (dist > maxDist) {
 				maxDist = dist;
 				furthestPost = possiblePost;
