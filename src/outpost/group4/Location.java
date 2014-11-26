@@ -133,37 +133,44 @@ public class Location {
 	 * Only returns one shortest path (if one exists), not all possible shortest paths
 	 */
 	public ArrayList<Location> shortestPathToLocation(Location destination) {
-		ArrayList<Location> path = new ArrayList<Location>();
-		Set<Location> visited = new HashSet<Location>();
-		LinkedList<ArrayList<Location>> q = new LinkedList<ArrayList<Location>>();
+			ArrayList<Location> path = new ArrayList<Location>();
+			Set<Location> visited = new HashSet<Location>();
+			LinkedList<ArrayList<Location>> q = new LinkedList<ArrayList<Location>>();
 
-		visited.add(this);
+			visited.add(this);
 
-		ArrayList<Location> basePath = new ArrayList<Location>();
-		basePath.add(this);
-		q.add(basePath);
+			ArrayList<Location> basePath = new ArrayList<Location>();
+			basePath.add(this);
+			q.add(basePath);
 
-		while (!q.isEmpty()) {
-			ArrayList<Location> p = q.removeFirst();
-			Location last = p.get(p.size() - 1);
+			while (!q.isEmpty()) {
+				ArrayList<Location> p = q.removeFirst();
+				Location last = p.get(p.size() - 1);
 
-			if (last.equals(destination)) {
-				path = p;
-				break;
-			}
-
-			for (Location loc : last.adjacentLocations()) {
-				if (visited.contains(loc)) {
-					continue;
+				if (last.equals(destination)) {
+					path = p;
+					break;
 				}
-				visited.add(loc);
-				ArrayList<Location> newP = new ArrayList<Location>(p);
-				newP.add(loc);
-				q.add(newP);
-			}
-		}
 
-		return path;
+				for (Location loc : last.adjacentLocations()) {
+					if (visited.contains(loc)) {
+						continue;
+					}
+					visited.add(loc);
+					ArrayList<Location> newP = new ArrayList<Location>(p);
+					newP.add(loc);
+					q.add(newP);
+				}
+			}
+
+			return path;
+	}
+
+	public void updateLocationWithShortestPathToTarget(Location target) {
+			ArrayList<Location> path = this.shortestPathToLocation(target);
+			int nextLocationIndex = (path.size() > 1)? 1 : 0;
+			this.x = path.get(nextLocationIndex).x;
+			this.y = path.get(nextLocationIndex).y;
 	}
 
 }

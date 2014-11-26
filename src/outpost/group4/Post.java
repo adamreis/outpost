@@ -25,6 +25,21 @@ public class Post extends Location {
 		this.id = id;
 	}
 
+	public Post(Post p) {
+			super(p.x, p.y);
+			this.id = p.id;
+	}
+
+	public Post copy() {
+			return new Post(this);
+	}
+
+	public void update(Post p) {
+			this.x = p.x;
+			this.y = p.y;
+			this.id = p.id;
+	}
+
 	public String toString() {
 		return "outpost #" + this.id + ": " + super.toString();
 	}

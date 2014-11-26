@@ -84,6 +84,10 @@ public class Board {
         return filteredSquares;
     }
 
+    public ArrayList<GridSquare> filteredSquares(GridSquareFilter filter) {
+        return filteredSquares(getGridSquaresList(), filter);
+    }
+
     public ArrayList<GridSquare> squaresWithinRadius(Location square) {
         ArrayList<GridSquare> squares = new ArrayList<GridSquare>();
 

@@ -5,15 +5,21 @@ import java.util.*;
 public class MaxWaterHeuristic extends BoardHeuristic {
 
     private WaterGridSquareFilter filter;
+    public boolean careAboutOwnership;
 
     public MaxWaterHeuristic(Board board) {
+        this(board, true);
+    }
+
+    public MaxWaterHeuristic(Board board, boolean careAboutOwnership) {
         super(board);
 
         filter = new WaterGridSquareFilter();
+        this.careAboutOwnership = careAboutOwnership;
     }
 
     public double score(GridSquare square) {
-        return score(square, true);
+        return score(square, careAboutOwnership);
     }
 
     public double score(GridSquare square, boolean accountForOwnership) {
