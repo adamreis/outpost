@@ -13,10 +13,25 @@ public class MaxWaterHeuristic extends BoardHeuristic {
     }
 
     public double score(GridSquare square) {
-        if (square.water || board.weOwnLocation(square)) {
+        return score(square, true);
+    }
+
+    public double score(GridSquare square, boolean accountForOwnership) {
+        if (square.water) {
             return 0;
         }
 
-        return (double) board.filteredSquaresWithinRadius(square, filter).size();
+        if (accountForOwnership && board.weWillOwnLocation(square)) {
+            return 0;
+        }
+
+        ArrayList<GridSquare> surroundingWater = board.filteredSquaresWithinRadius(square, filter);
+        if (accountForOwnership) {
+            NegationGridSquareFilter nonOwningFilter = new NegationGridSquareFilter(new OwnershipGridSquareFilter());
+            return (double) board.filteredSquares(surroundingWater, nonOwningFilter).size();
+        }
+        else {
+            return (double) surroundingWater.size();
+        }
     }
 }
