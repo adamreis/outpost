@@ -73,11 +73,9 @@ public class StagePlanningStrategy implements Strategy {
             ArrayList<GridSquare> squaresInQuadrant = Player.board.filteredSquares(validQuadrantTerritoriesFilter);
             ArrayList<GridSquare> bestWaterCellsInQuadrant = mostValuableCells(waterCollectorCount, squaresInQuadrant, waterFilter, false);
             for (int i = 0; i < bestWaterCellsInQuadrant.size(); i++) {
-                System.out.println(bestWaterCellsInQuadrant.get(i));
                 GridSquare target = bestWaterCellsInQuadrant.get(i);
                 updateTargetAtIndex(i, target);
             }
-            System.out.println("\n");
         }
 
         // add the base protectors
