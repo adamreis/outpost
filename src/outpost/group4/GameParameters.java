@@ -15,17 +15,19 @@ public class GameParameters {
 		public int requiredWater;
 		public int totalTurns;
 		public int size;
+		public int id;
 
 		public GameParameters() {
-				this(0, 0, 0, 0, 100);
+				this(0, 0, 0, 0, 100, 0);
 		}
 
-		public GameParameters(int r, int l, int w, int t, int s) {
+		public GameParameters(int r, int l, int w, int t, int s, int id) {
 				this.outpostRadius = r;
 				this.requiredLand = l;
 				this.requiredWater = w;
 				this.totalTurns = t;
 				this.size = s;
+				this.id = id;
 		}
 
 		public int landNeededForOutposts(int outposts) {

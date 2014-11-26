@@ -24,7 +24,8 @@ public class Player extends outpost.sim.Player {
 
 		knownID = id;
 
-		this.strategy = new UtilityMaxStrategy();
+//		this.strategy = new UtilityMaxStrategy();
+		this.strategy = new SabotageStrategy();
 
 		this.turn = 0;
 	}
@@ -46,7 +47,7 @@ public class Player extends outpost.sim.Player {
 		// initialize the goods if necessary
 		if (Player.parameters == null) {
 			baseLoc = new Location(outpostList.get(this.id).get(0));
-			Player.parameters = new GameParameters(r, L, W, T, SIZE);
+			Player.parameters = new GameParameters(r, L, W, T, SIZE, this.id);
 		}
 
 		// create the static known board
