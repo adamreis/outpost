@@ -12,6 +12,7 @@ public class Conversions {
 		ArrayList<movePair> pairs = new ArrayList<movePair>();
 
 		for (Post post : posts) {
+//			System.err.println("post: " + post);
 			pairs.add(new movePair(post.id, new Pair(post.x, post.y)));
 		}
 		return pairs;

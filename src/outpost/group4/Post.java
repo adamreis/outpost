@@ -114,7 +114,7 @@ public class Post extends Location {
   }
 
 	public Post moveMinimizingDistanceFrom(Location loc) {
-		Post nearestPost = null;
+		Post nearestPost = this;
 		double minDist = distanceTo(loc);
 		ArrayList<Post> possibleMoves = adjacentPosts();
 
