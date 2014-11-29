@@ -11,21 +11,59 @@ public class KamikazePostPair {
 	public State state;
 	public Post p1;
 	public Post p2;
-	private ArrayList<Post> targetPosts;
+	private boolean isStalled;
 	
-	public KamikazePostPair(Post p1, Post p2, ArrayList<Post> enemyPosts) {
+	public KamikazePostPair(Post p1, Post p2) {
 		this.p1 = p1;
 		this.p2 = p2;
-		
-		this.targetPosts = enemyPosts;
+		this.isStalled = false;
 	}
 	
-	public void move() {
+	public KamikazePostPair(KamikazePostPair kPair) {
+		this.p1 = new Post(kPair.p1);
+		this.p2 = new Post(kPair.p2);
+		this.isStalled = kPair.isStalled;
+	}
+	
+	private Location nearestLocationTowardTargetBase(Post startingPoint, ArrayList<Post> targetPosts, Location targetBase){
+		Location nearest = targetBase;
+		double distanceToTarget = startingPoint.distanceTo(targetBase);
+		double shortestDistance = distanceToTarget;
+		
+		for (Post p : targetPosts) {
+			double sToP = startingPoint.distanceTo(p);
+			double pToT = p.distanceTo(targetBase);
+			if (sToP < shortestDistance && pToT < distanceToTarget) {
+				nearest = p;
+				shortestDistance = startingPoint.distanceTo(p);
+			}
+		}
+		
+		return nearest;
+	}
+	
+	private boolean checkIfAdjacentToTargetPost(ArrayList<Post> targetPosts) {
+		for (Post p : targetPosts) {
+			if (p1.distanceTo(p) == 1.0 || p2.distanceTo(p) == 1.0) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void move(ArrayList<Post> targetPosts, Location targetBase) {
 		updateState();
-		Location targetLoc = this.p1.nearestLocation(this.targetPosts);
+		Location targetLoc = nearestLocationTowardTargetBase(this.p1, targetPosts, targetBase);
 		
 		switch (this.state) {
 			case CONNECTED: 
+				if (this.isStalled) {
+					this.isStalled = false;
+				} else if (this.checkIfAdjacentToTargetPost(targetPosts)) {
+					this.isStalled = true;
+					break;
+				}
+				
 				moveTowardLocation(targetLoc);
 				break;
 			

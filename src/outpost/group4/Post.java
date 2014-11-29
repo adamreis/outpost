@@ -23,6 +23,11 @@ public class Post extends Location {
 		super(p);
 		this.id = id;
 	}
+	
+	public Post(Post post) {
+		super(post.x, post.y);
+		this.id = post.id;
+	}
 
 	public String toString() {
 		return "outpost #" + this.id + ": " + super.toString();
