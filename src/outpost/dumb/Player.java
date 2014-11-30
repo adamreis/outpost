@@ -86,6 +86,9 @@ public class Player extends outpost.sim.Player {
 		}*/
     	//else {
     		ArrayList<Pair> positions = new ArrayList<Pair>();
+    		if (prarr.size() == 0) {
+    			return nextlist;
+    		}
     		positions = surround(prarr.get(prarr.size()-1));
     		boolean gotit=false;
     		while (!gotit) {
