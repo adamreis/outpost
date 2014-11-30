@@ -11,24 +11,21 @@ public class KamikazePostPair {
 	public State state;
 	public Post p1;
 	public Post p2;
-	public int targetId;
 	private boolean isStalled;
-	public boolean stayPut;
+	public boolean reachedGoal;
 	
 	public KamikazePostPair(Post p1, Post p2) {
 		this.p1 = p1;
 		this.p2 = p2;
 		this.isStalled = false;
-		this.targetId = -1;
-		this.stayPut = false;
+		this.reachedGoal = false;
 	}
 	
 	public KamikazePostPair(KamikazePostPair kPair) {
 		this.p1 = new Post(kPair.p1);
 		this.p2 = new Post(kPair.p2);
 		this.isStalled = kPair.isStalled;
-		this.targetId = kPair.targetId;
-		this.stayPut = kPair.stayPut;
+		this.reachedGoal = kPair.reachedGoal;
 	}
 	
 	private Location nearestLocationTowardTargetBase(Post startingPoint, ArrayList<Post> targetPosts, Location targetBase){
@@ -57,8 +54,11 @@ public class KamikazePostPair {
 		return false;
 	}
 	
-	public void move(ArrayList<Post> targetPosts, Location targetBase) {
-		
+	public boolean move(ArrayList<Post> targetPosts, Location targetBase) {
+		// Returns true iff p1 overtakes an enemy base
+		if (this.reachedGoal) {
+			return false; // because this won't be the first time
+		}
 		
 		updateState();
 		Location targetLoc = nearestLocationTowardTargetBase(this.p1, targetPosts, targetBase);
@@ -85,6 +85,12 @@ public class KamikazePostPair {
 				
 			default: break;
 		}
+		
+		if (this.p1.distanceTo(targetBase) == 0) {
+			System.out.println("targetBase reached! at " + this.p1);
+			this.reachedGoal = true;
+		}
+		return this.reachedGoal;
 	}
 	
 	private Post moveTowardTargetAndBase(Post p, Location target, Location base) {

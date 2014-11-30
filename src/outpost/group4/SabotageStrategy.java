@@ -12,6 +12,7 @@ public class SabotageStrategy implements Strategy {
     private ArrayList<KamikazePostPair> kamikazes;
     private ArrayList<Location> enemyBaseLocs;
     private int id;
+    private int currentEnemyId;
     private Location homeBase;
     
     public SabotageStrategy(int id) {
@@ -19,6 +20,7 @@ public class SabotageStrategy implements Strategy {
     	this.enemyBaseLocs = new ArrayList<Location>();
     	this.id = id;
     	this.homeBase = Conversions.baseLocationForId(id);
+    	this.currentEnemyId = -1;
     	
     	for (int i = 0; i < 4; i++) {
     		if (i == id) {
@@ -29,12 +31,44 @@ public class SabotageStrategy implements Strategy {
     	}
     }
     
+    private void pickNewEnemyId(){
+    	int newId = -1;
+    	double newEnemyDistance = Integer.MAX_VALUE;
+    	
+    	for (int i = 0; i < this.enemyBaseLocs.size(); i++) {
+    		boolean foundMatch = false;
+    		for (KamikazePostPair kPair : this.kamikazes) {
+    			if (kPair.p1.distanceTo(this.enemyBaseLocs.get(i)) == 0) {
+    				foundMatch = true;
+    				break;
+    			}
+    		}
+    		if (foundMatch) {
+    			continue;
+    		}
+    		
+    		if (this.homeBase.distanceTo(this.enemyBaseLocs.get(i)) < newEnemyDistance) {
+    			newId = i;
+    			newEnemyDistance = this.homeBase.distanceTo(this.enemyBaseLocs.get(i));
+    		}
+    	}
+    	
+    	if (newId == -1) {
+    		System.out.println("ALL ENEMIES CAPTURED, YO!  WE PROB HAVE SOME EXTRA BASES FOR SABOTAGE");
+    	}
+    	
+    	this.currentEnemyId = newId;
+    }
+    
 	public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {
 		ArrayList<Post> newPosts = new ArrayList<Post>();
-		
 		ArrayList<Post> unmatchedPosts = new ArrayList<Post>();
 		ArrayList<KamikazePostPair> matchedPairs = new ArrayList<KamikazePostPair>();
 		ArrayList<KamikazePostPair> newKamikazes = new ArrayList<KamikazePostPair>();
+		
+		if (this.currentEnemyId == -1) {
+			this.pickNewEnemyId();
+		}
 		
 		for (int i = 0; i < posts.size(); i++) {
 			unmatchedPosts.add(new Post(posts.get(i)));
@@ -60,18 +94,17 @@ public class SabotageStrategy implements Strategy {
 		// Move all the kamikaze pairs
 		for (int i = 0; i < matchedPairs.size(); i++) {
 			KamikazePostPair kPair = matchedPairs.get(i);
-//			System.out.println("matchedPair before : " + kPair.p1 + " + " + kPair.p2);
 			
-			// If kPair doesn't already have an intended target, give it one
-			if (kPair.targetId < 0) {
-				kPair.targetId = i%3;
+			if (this.currentEnemyId >= 0) {
+				ArrayList<Post> enemyPosts = otherPlayerPosts.get(this.currentEnemyId);
+				Location enemyBase = this.enemyBaseLocs.get(this.currentEnemyId);
+				
+				boolean reachedGoal = kPair.move(enemyPosts, enemyBase);
+				if (reachedGoal) {
+					this.currentEnemyId = -1;
+				}
+				newKamikazes.add(kPair);
 			}
-			
-			ArrayList<Post> enemyPosts = otherPlayerPosts.get(kPair.targetId);
-			Location enemyBase = this.enemyBaseLocs.get(kPair.targetId);
-			
-			kPair.move(enemyPosts, enemyBase);
-			newKamikazes.add(kPair);
 			newPosts.add(kPair.p1);
 			newPosts.add(kPair.p2);
 //			System.out.println("matchedPair after : " + kPair.p1 + " + " + kPair.p2);
