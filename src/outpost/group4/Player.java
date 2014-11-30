@@ -39,6 +39,8 @@ public class Player extends outpost.sim.Player {
 
 		if (del < 0) del = random.nextInt(outpostList.get(id).size());
 
+    //this.strategy.deleteOutpost(del);
+
 		return del;
 	}
 

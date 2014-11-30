@@ -50,16 +50,52 @@ public class Board {
         return board;
     }
 
-    public ArrayList<GridSquare> getGridSquaresList() {
+    public ArrayList<GridSquare> getGridSquaresList(boolean landOnly) {
         ArrayList<GridSquare> squares = new ArrayList<GridSquare>();
 
         for (GridSquare[] rowArray : board) {
             for (GridSquare square : rowArray) {
+                if (landOnly && square.water) continue;
                 squares.add(square);
             }
         }
 
         return squares;
+    }
+
+    // given an ArrayList of GridSquares, return only those in our quadrant
+    public ArrayList<GridSquare> getSquaresInQuadrant(ArrayList<GridSquare> squares) {
+        ArrayList<GridSquare> squaresInQuadrant = new ArrayList<GridSquare>();
+        for (GridSquare gs : squares) {
+            if (inQuadrant(gs))
+                squaresInQuadrant.add(gs);
+        }
+        return squaresInQuadrant;
+    }
+
+    // return true if the GridSquare is in our quadrant, false otherwise
+    public boolean inQuadrant(GridSquare square) {
+        if (Player.knownID == 0) {
+            if (square.x < 50 && square.y < 50)
+                return true; 
+            else
+                return false;
+        } else if (Player.knownID == 1) {
+            if (square.x >= 50 && square.y < 50)
+                return true; 
+            else
+                return false;
+        } else if (Player.knownID == 2) {
+            if (square.x < 50 && square.y >= 50)
+                return true;
+            else
+                return false;
+        } else {
+            if (square.x >= 50 && square.y >= 50)
+                return true;
+            else
+                return false;
+        }
     }
 
     public ArrayList<GridSquare> filteredSquaresWithinRadius(GridSquare square, GridSquareFilter filter) {
@@ -108,6 +144,65 @@ public class Board {
         }
 
         return owner;
+    }
+
+    /**
+     * returns the "water score" for a given post, counting squares within its radius in the following way
+     * if a square is land, it is worth 0
+     * if a water square is owned by the given post, it is worth 1
+     * if a water square is owned by another of our posts, it is worth 0
+     * if a water square is unowned by us, it is worth 1
+     */
+    public int waterScoreForPost(GridSquare square, ArrayList<GridSquare> postSquares) {
+        int score = 0;
+
+        for (GridSquare gs : squaresWithinRadius(square)) {
+            // if square is land, discount
+            if (!gs.water) {
+                continue;
+            } 
+            // if the post owns the square, consider it a good thing
+            else if (postSquares.contains(gs)) {
+                score += 1;
+            } 
+            // if another post owns the square, discount
+            else if (weOwnLocation(gs)) {
+                continue;
+            } 
+            // otherwise, we go for it
+            else {
+                score += 1;
+            }
+        }
+        return score;
+    }
+
+    /**
+     * returns a sorted list of the best water squares *for* a given post, based
+     * on the score returned by the waterScoreForPost method.
+     * Weighted by distance by subtracting .5 * distance from post to square from
+     * the water score. This heuristic was determined via trial and error and is
+     * open to being changed.
+     */
+    public ArrayList<GridSquare> getBestWaterSquaresForPost(Post post) {
+        ArrayList<GridSquare> waterSquaresForPost = getGridSquaresList(true);
+        ArrayList<GridSquare> postSquares = squaresWithinRadius(post);
+
+        // sort by water score
+        Collections.sort(waterSquaresForPost, new Comparator<GridSquare>() {
+            public int compare(GridSquare one, GridSquare other) {
+                double oneWaterScore   = waterScoreForPost(one, postSquares) - (.5 * post.distanceTo(one)); 
+                double otherWaterScore = waterScoreForPost(other, postSquares) - (.5 * post.distanceTo(other));
+                if (oneWaterScore < otherWaterScore)
+                    return 1;
+                else if (oneWaterScore == otherWaterScore)
+                    return 0;
+                else
+                    return -1;
+            }
+        });
+
+        return waterSquaresForPost; 
     }
 
     public boolean weOwnLocation(Location location) {

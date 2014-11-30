@@ -417,12 +417,7 @@ public class Outpost
 			g2.fill(e);
 
 		}
-
-
-
 	}
-
-
 
 	void updatePoint(Point pr) {
 		pr.ownerlist.clear();

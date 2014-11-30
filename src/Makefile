@@ -1,8 +1,8 @@
-MAP=mapOriginBlob
-PLAYER0=dumb
+MAP=map0
+PLAYER0=group4
 PLAYER1=dumb
 PLAYER2=dumb
-PLAYER3=group4
+PLAYER3=dumb
 R=10
 L=4
 W=1
