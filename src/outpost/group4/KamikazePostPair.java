@@ -11,18 +11,24 @@ public class KamikazePostPair {
 	public State state;
 	public Post p1;
 	public Post p2;
+	public int targetId;
 	private boolean isStalled;
+	public boolean stayPut;
 	
 	public KamikazePostPair(Post p1, Post p2) {
 		this.p1 = p1;
 		this.p2 = p2;
 		this.isStalled = false;
+		this.targetId = -1;
+		this.stayPut = false;
 	}
 	
 	public KamikazePostPair(KamikazePostPair kPair) {
 		this.p1 = new Post(kPair.p1);
 		this.p2 = new Post(kPair.p2);
 		this.isStalled = kPair.isStalled;
+		this.targetId = kPair.targetId;
+		this.stayPut = kPair.stayPut;
 	}
 	
 	private Location nearestLocationTowardTargetBase(Post startingPoint, ArrayList<Post> targetPosts, Location targetBase){
@@ -52,6 +58,8 @@ public class KamikazePostPair {
 	}
 	
 	public void move(ArrayList<Post> targetPosts, Location targetBase) {
+		
+		
 		updateState();
 		Location targetLoc = nearestLocationTowardTargetBase(this.p1, targetPosts, targetBase);
 		
@@ -64,11 +72,11 @@ public class KamikazePostPair {
 					break;
 				}
 				
-				moveTowardLocation(targetLoc);
+				moveTowardLocation(targetLoc, targetBase);
 				break;
 			
 			case OVERLAPPING:
-				moveApart(targetLoc);
+				moveApart(targetLoc, targetBase);
 				break;
 		
 			case DISCONNECTED:
@@ -79,8 +87,18 @@ public class KamikazePostPair {
 		}
 	}
 	
-	private void moveApart(Location targetLoc) {
-		this.p1 = this.p1.moveMinimizingDistanceFrom(targetLoc);
+	private Post moveTowardTargetAndBase(Post p, Location target, Location base) {
+		//pick the move minimizing distance from target that also brings you closer to base
+		for (Post next : p.movesMinimizingDistanceFrom(target)) {
+			if (next.distanceTo(base) < p.distanceTo(base)) {
+				return next;
+			}
+		}
+		return p.moveMinimizingDistanceFrom(base);
+	}
+	
+	private void moveApart(Location targetLoc, Location targetBase) {
+		this.p1 = moveTowardTargetAndBase(p1, targetLoc, targetBase);
 	}
 	
 	private void moveTogether() {
@@ -90,9 +108,12 @@ public class KamikazePostPair {
 		}
 	}
 	
-	private void moveTowardLocation(Location targetLoc) {
-		this.p1 = this.p1.moveMinimizingDistanceFrom(targetLoc);
-		this.p2 = this.p2.moveMinimizingDistanceFrom(this.p1);
+	private void moveTowardLocation(Location targetLoc, Location targetBase) {
+//		System.out.println("moveTowardLocation called");
+		this.p1 = moveTowardTargetAndBase(p1, targetLoc, targetBase);
+		if (this.p2.distanceTo(p1) > 1.0) {
+			this.p2 = this.p2.moveMinimizingDistanceFrom(this.p1);
+		}
 	}
 	
 	private void updateState() {

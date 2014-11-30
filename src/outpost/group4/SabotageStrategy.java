@@ -2,18 +2,20 @@ package outpost.group4;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import outpost.group4.Conversions;
 
 public class SabotageStrategy implements Strategy {
 	
-    private HashMap<Post, KamikazePostPair> kamikazes;
+    private ArrayList<KamikazePostPair> kamikazes;
     private ArrayList<Location> enemyBaseLocs;
     private int id;
     private Location homeBase;
     
     public SabotageStrategy(int id) {
-    	this.kamikazes = new HashMap<Post, KamikazePostPair>();
+    	this.kamikazes = new ArrayList<KamikazePostPair>();
     	this.enemyBaseLocs = new ArrayList<Location>();
     	this.id = id;
     	this.homeBase = Conversions.baseLocationForId(id);
@@ -29,67 +31,98 @@ public class SabotageStrategy implements Strategy {
     
 	public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {
 		ArrayList<Post> newPosts = new ArrayList<Post>();
-		ArrayList<Post> enemyPosts = otherPlayerPosts.get(1);
-		Location enemyBase = this.enemyBaseLocs.get(1);
 		
 		ArrayList<Post> unmatchedPosts = new ArrayList<Post>();
-		HashMap<Post, KamikazePostPair> newKamikazes = new HashMap<Post, KamikazePostPair>();
+		ArrayList<KamikazePostPair> matchedPairs = new ArrayList<KamikazePostPair>();
+		ArrayList<KamikazePostPair> newKamikazes = new ArrayList<KamikazePostPair>();
 		
-	
 		for (int i = 0; i < posts.size(); i++) {
-			if (this.kamikazes.containsKey(posts.get(i))) {
-				KamikazePostPair kPair = this.kamikazes.get(posts.get(i));
-				if (this.kamikazes.get(kPair.p1) == kPair && this.kamikazes.get(kPair.p2) == kPair) {
-					KamikazePostPair newPair = new KamikazePostPair(kPair); 
-					newPair.move(enemyPosts, enemyBase);
-					newKamikazes.put(newPair.p1, newPair);
-					newKamikazes.put(newPair.p2, newPair);
-					newPosts.add(newPair.p1);
-					newPosts.add(newPair.p2);
-				} else {
-					unmatchedPosts.add(posts.get(i));
-				}
-			} else {
-				unmatchedPosts.add(posts.get(i));
+			unmatchedPosts.add(new Post(posts.get(i)));
+		}
+		
+		for (KamikazePostPair kPair : this.kamikazes) {
+			
+			if (unmatchedPosts.contains(kPair.p1) && unmatchedPosts.contains(kPair.p2)) {
+				matchedPairs.add(kPair);
+				unmatchedPosts.remove(kPair.p1);
+				unmatchedPosts.remove(kPair.p2);
 			}
 		}
+	
+		ArrayList<KamikazePostPair> newKPairs = matchPosts(unmatchedPosts);
+		matchedPairs.addAll(newKPairs);
 		
-		for (int i = 0; i < unmatchedPosts.size() - 1; i += 2) {
-			Post p1 = unmatchedPosts.get(i);
-			Post p2 = unmatchedPosts.get(i+1);
-			KamikazePostPair kPair = new KamikazePostPair(p1, p2);
-			kPair.move(enemyPosts, enemyBase);
-			newKamikazes.put(kPair.p1, kPair);
-			newKamikazes.put(kPair.p2,  kPair);
-			newPosts.add(kPair.p1);
-			newPosts.add(kPair.p2);
-		}
-		
-		if (unmatchedPosts.size() % 2 != 0) {
-			Post lastUnmatched = unmatchedPosts.get(unmatchedPosts.size() -1);
+		// Add last unmatched, if it exists
+		for (Post lastUnmatched : unmatchedPosts) {
 			newPosts.add(lastUnmatched.moveMinimizingDistanceFrom(this.homeBase));
 		}
 		
-		this.kamikazes = newKamikazes;
-		
-//		if (posts.size() > 0)
-//			newPosts.add(posts.get(0).moveMinimizingDistanceFrom(new Location(10,0)));
-//		if (posts.size() > 1)
-//			newPosts.add(posts.get(1).moveMinimizingDistanceFrom(new Location(0,15)));
+		// Move all the kamikaze pairs
+		for (int i = 0; i < matchedPairs.size(); i++) {
+			KamikazePostPair kPair = matchedPairs.get(i);
+//			System.out.println("matchedPair before : " + kPair.p1 + " + " + kPair.p2);
 			
+			// If kPair doesn't already have an intended target, give it one
+			if (kPair.targetId < 0) {
+				kPair.targetId = i%3;
+			}
+			
+			ArrayList<Post> enemyPosts = otherPlayerPosts.get(kPair.targetId);
+			Location enemyBase = this.enemyBaseLocs.get(kPair.targetId);
+			
+			kPair.move(enemyPosts, enemyBase);
+			newKamikazes.add(kPair);
+			newPosts.add(kPair.p1);
+			newPosts.add(kPair.p2);
+//			System.out.println("matchedPair after : " + kPair.p1 + " + " + kPair.p2);
+		}
 		
-//		for (int i = 0; i < posts.size() - 1; i += 2) {
-////			System.err.println("post in: " + posts.get(i));
-////			System.err.println("post in: " + posts.get(i+1));
-//			KamikazePostPair kPair = new KamikazePostPair(posts.get(i), posts.get(i+1), enemyPosts);
-//			kPair.move();
-//			newPosts.add(kPair.p1);
-//			newPosts.add(kPair.p2);
-//		}
-		
-		
-		
+		this.kamikazes = newKamikazes;
+	
 		return newPosts;
+	}
+	
+	private ArrayList<KamikazePostPair> matchPosts(ArrayList<Post> unmatchedPosts) {
+		// This will remove all unmatched posts as new pairs are created, leaving 1 if there are an odd number
+		ArrayList<KamikazePostPair> newKPairs = new ArrayList<KamikazePostPair>();
+		
+		while (unmatchedPosts.size() > 1) {
+			// Find farthest post
+			Post farthestFromBase = new Post(0,0,-1);
+			double farthestDistFromBase = -1;
+			
+			for (Post p : unmatchedPosts) {
+				double newDist = p.distanceTo(this.homeBase);
+				if (newDist > farthestDistFromBase) {
+					farthestDistFromBase = newDist;
+					farthestFromBase = p;
+				}
+			}
+			
+			// Find closest post to this one
+			Post closestMatch = new Post(0,0,-1);
+			double closestDist = Integer.MAX_VALUE;
+			
+			for (Post p : unmatchedPosts) {
+				if (p == farthestFromBase) {
+					continue;
+				}
+				double newDist = p.distanceTo(farthestFromBase);
+				if (newDist < closestDist) {
+					closestMatch = p;
+					closestDist = newDist;
+				}
+			}
+//			System.out.println("adding new post pair: " + farthestFromBase + " + " + closestMatch);
+			// Add these two to a new kPair
+			newKPairs.add(new KamikazePostPair(farthestFromBase, closestMatch));
+			
+			// Remove these two from unmatchedPosts
+			unmatchedPosts.remove(farthestFromBase);
+			unmatchedPosts.remove(closestMatch);
+		}
+		
+		return newKPairs;
 	}
 }
 
