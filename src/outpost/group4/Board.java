@@ -77,12 +77,12 @@ public class Board {
     public boolean inQuadrant(GridSquare square) {
         if (Player.knownID == 0) {
             if (square.x < 50 && square.y < 50)
-                return true; 
+                return true;
             else
                 return false;
         } else if (Player.knownID == 1) {
             if (square.x >= 50 && square.y < 50)
-                return true; 
+                return true;
             else
                 return false;
         } else if (Player.knownID == 2) {
@@ -160,15 +160,15 @@ public class Board {
             // if square is land, discount
             if (!gs.water) {
                 continue;
-            } 
+            }
             // if the post owns the square, consider it a good thing
             else if (postSquares.contains(gs)) {
                 score += 1;
-            } 
+            }
             // if another post owns the square, discount
             else if (weOwnLocation(gs)) {
                 continue;
-            } 
+            }
             // otherwise, we go for it
             else {
                 score += 1;
@@ -186,13 +186,14 @@ public class Board {
      */
     public ArrayList<GridSquare> getBestWaterSquaresForPost(Post post) {
         ArrayList<GridSquare> waterSquaresForPost = getGridSquaresList(true);
-        ArrayList<GridSquare> postSquares = squaresWithinRadius(post);
+        final ArrayList<GridSquare> postSquares = squaresWithinRadius(post);
+        final Post relevantPost = post;
 
         // sort by water score
         Collections.sort(waterSquaresForPost, new Comparator<GridSquare>() {
             public int compare(GridSquare one, GridSquare other) {
-                double oneWaterScore   = waterScoreForPost(one, postSquares) - (.5 * post.distanceTo(one)); 
-                double otherWaterScore = waterScoreForPost(other, postSquares) - (.5 * post.distanceTo(other));
+                double oneWaterScore   = waterScoreForPost(one, postSquares) - (.5 * relevantPost.distanceTo(one));
+                double otherWaterScore = waterScoreForPost(other, postSquares) - (.5 * relevantPost.distanceTo(other));
                 if (oneWaterScore < otherWaterScore)
                     return 1;
                 else if (oneWaterScore == otherWaterScore)
@@ -202,7 +203,7 @@ public class Board {
             }
         });
 
-        return waterSquaresForPost; 
+        return waterSquaresForPost;
     }
 
     public boolean weOwnLocation(Location location) {
