@@ -14,6 +14,11 @@ public class ShellStrategy implements Strategy {
         seasonCount = 0;
     }
 
+    public int delete(ArrayList<Post> posts) {
+      ;
+      return -1;
+    }
+
     public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {
         if (newSeason) {
             seasonCount += 1;

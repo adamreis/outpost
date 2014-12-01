@@ -36,14 +36,7 @@ public class Player extends outpost.sim.Player {
 	public int delete(ArrayList<ArrayList<Pair>> outpostList, Point[] grid) {
 		ArrayList<Post> posts = Conversions.postsFromPairs(outpostList.get(this.id));
 
-		Post nearestPost = (Post) this.baseLoc.nearestLocation(posts);
-		int del = posts.indexOf(nearestPost);
-
-		if (del < 0) del = random.nextInt(outpostList.get(id).size());
-
-    //this.strategy.deleteOutpost(del);
-
-		return del;
+    return this.strategy.delete(posts);
 	}
 
 	public ArrayList<movePair> move(ArrayList<ArrayList<Pair>> outpostList, Point[] grid, int r, int L, int W, int T) {
