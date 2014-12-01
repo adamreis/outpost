@@ -10,6 +10,11 @@ public class UtilityMaxStrategy implements Strategy {
     ArrayList<GridSquare> postTargets;
     int turn = 0;
 
+    public int delete(ArrayList<Post> posts) {
+      ;
+      return -1;
+    }
+
     public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {
         if (postTargets == null) {
           postTargets = new ArrayList<GridSquare>();

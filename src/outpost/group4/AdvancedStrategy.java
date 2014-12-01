@@ -40,7 +40,7 @@ public class AdvancedStrategy implements Strategy {
         ArrayList<Post> unassigned = new ArrayList<Post>();
 
         // assign what we know from last turn
-        // we remove things from the set after counting them in cast multiple outposts are in the same location
+        // we remove things from the set after counting them in cast multiple outposts are in the same locationc
         for (Post p : posts) {
           if (previousTurnDefense.contains(p)) {
             defense.add(p);
@@ -99,5 +99,26 @@ public class AdvancedStrategy implements Strategy {
         }
 
         return newPosts;
+    }
+
+    public int delete(ArrayList<Post> posts) {
+      // delete a shell if possible
+      for (int i = 0; i < posts.size(); i++) {
+        Post p = posts.get(i);
+        if (previousTurnShell.contains(p)) {
+            return i;
+        }
+      }
+
+      // delete an offense if possible
+      for (int i = 0; i < posts.size(); i++) {
+        Post p = posts.get(i);
+        if (previousTurnOffense.contains(p)) {
+          return i;
+        }
+      }
+
+      // at this point anything is bad
+      return Player.random.nextInt(posts.size());
     }
 }
