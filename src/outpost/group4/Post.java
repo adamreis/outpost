@@ -23,10 +23,14 @@ public class Post extends Location {
 		super(p);
 		this.id = id;
 	}
-	
+
 	public Post(Post post) {
 		super(post.x, post.y);
 		this.id = post.id;
+	}
+
+	public Post copy() {
+		return new Post(x, y, id);
 	}
 
 	public String toString() {
@@ -121,11 +125,11 @@ public class Post extends Location {
 	public Post moveMinimizingDistanceFrom(Location loc) {
 		return movesMinimizingDistanceFrom(loc).get(0);
 	}
-	
+
 	public ArrayList<Post> movesMinimizingDistanceFrom(Location loc) {
 		ArrayList<Post> nearestPosts = new ArrayList<Post>();
 		nearestPosts.add(this);
-		
+
 		ArrayList<Post> possibleMoves = adjacentPosts();
 
 		for (Post possiblePost : possibleMoves) {
@@ -138,7 +142,7 @@ public class Post extends Location {
 				nearestPosts.add(possiblePost);
 			}
 		}
-		
+
 		return nearestPosts;
 	}
 
