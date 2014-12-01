@@ -7,7 +7,7 @@ R=10
 L=4
 W=1
 GUI=false
-ROUNDS=10000
+ROUNDS=4444
 
 run:
 	java outpost.sim.Outpost $(MAP) $(R) $(L) $(W) $(GUI) $(PLAYER0) $(PLAYER1) $(PLAYER2) $(PLAYER3) $(ROUNDS)
