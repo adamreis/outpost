@@ -97,12 +97,24 @@ public class SabotageStrategy implements Strategy {
 			
 			if (this.currentEnemyId >= 0) {
 
-        // GO AFTER EVERYONE'S POSTS
+        // GO AFTER EVERYONE'S POSTS AND BASES
         ArrayList<Post> enemyPosts = new ArrayList<Post>();
         for (int j = 0; j < otherPlayerPosts.size(); j++) {
           for (Post p : otherPlayerPosts.get(j))
             enemyPosts.add(p);
         }
+        for (Location loc : this.enemyBaseLocs) {
+          // ugly casting location to Post
+          Post p = new Post(loc, -1);
+          enemyPosts.add(p);
+        }
+
+        // GO AFTER EVERYONE'S POSTS
+        //ArrayList<Post> enemyPosts = new ArrayList<Post>();
+        //for (int j = 0; j < otherPlayerPosts.size(); j++) {
+        //  for (Post p : otherPlayerPosts.get(j))
+        //    enemyPosts.add(p);
+        //}
 
         // GO AFTER ONLY THE ENEMY's POSTS
 				//ArrayList<Post> enemyPosts = otherPlayerPosts.get(this.currentEnemyId);
