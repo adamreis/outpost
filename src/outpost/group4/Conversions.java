@@ -12,6 +12,7 @@ public class Conversions {
 		ArrayList<movePair> pairs = new ArrayList<movePair>();
 
 		for (Post post : posts) {
+//			System.err.println("post: " + post);
 			pairs.add(new movePair(post.id, new Pair(post.x, post.y)));
 		}
 		return pairs;
@@ -45,5 +46,22 @@ public class Conversions {
 
 		return gridSquares;
 	}
+	
+	public static Location baseLocationForId(int id) {
+		Location baseLoc;
+		int size = 100;
+		switch (id) {
+			case 1: baseLoc = new Location(size-1, 0);
+					break;
+			case 2: baseLoc = new Location(size-1, size-1);
+					break;
+			case 3: baseLoc = new Location(0, size-1);
+					break;
+			default: baseLoc = new Location(0, 0);
+					break;
+		}
+		return baseLoc;
+	}
+	
 
 }
