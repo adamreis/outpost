@@ -24,8 +24,9 @@ public class Player extends outpost.sim.Player {
 
 		knownID = id;
 
-//		this.strategy = new UtilityMaxStrategy();
-		this.strategy = new SabotageStrategy(id);
+    // this.strategy = new UtilityMaxStrategy();
+		// this.strategy = new SabotageStrategy(id);
+    this.strategy = new AdvancedStrategy();
 
 		this.turn = 0;
 	}
