@@ -61,7 +61,8 @@ public class KamikazePostPair {
 		}
 		
 		updateState();
-		Location targetLoc = nearestLocationTowardTargetBase(this.p1, targetPosts, targetBase);
+    Location targetLoc = this.p1.nearestLocation(targetPosts);
+		//Location targetLoc = nearestLocationTowardTargetBase(this.p1, targetPosts, targetBase);
 		
 		switch (this.state) {
 			case CONNECTED: 
@@ -104,7 +105,8 @@ public class KamikazePostPair {
 	}
 	
 	private void moveApart(Location targetLoc, Location targetBase) {
-		this.p1 = moveTowardTargetAndBase(p1, targetLoc, targetBase);
+		//this.p1 = moveTowardTargetAndBase(p1, targetLoc, targetBase);
+    this.p1 = this.p1.moveMinimizingDistanceFrom(targetLoc);
 	}
 	
 	private void moveTogether() {
@@ -116,7 +118,8 @@ public class KamikazePostPair {
 	
 	private void moveTowardLocation(Location targetLoc, Location targetBase) {
 //		System.out.println("moveTowardLocation called");
-		this.p1 = moveTowardTargetAndBase(p1, targetLoc, targetBase);
+		//this.p1 = moveTowardTargetAndBase(p1, targetLoc, targetBase);
+    this.p1 = this.p1.moveMinimizingDistanceFrom(targetLoc);
 		if (this.p2.distanceTo(p1) > 1.0) {
 			this.p2 = this.p2.moveMinimizingDistanceFrom(this.p1);
 		}

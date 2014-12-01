@@ -30,7 +30,7 @@ public class SabotageStrategy implements Strategy {
     		this.enemyBaseLocs.add(baseLoc);
     	}
     }
-    
+
     private void pickNewEnemyId(){
     	int newId = -1;
     	double newEnemyDistance = Integer.MAX_VALUE;
@@ -96,7 +96,17 @@ public class SabotageStrategy implements Strategy {
 			KamikazePostPair kPair = matchedPairs.get(i);
 			
 			if (this.currentEnemyId >= 0) {
-				ArrayList<Post> enemyPosts = otherPlayerPosts.get(this.currentEnemyId);
+
+        // GO AFTER EVERYONE'S POSTS
+        ArrayList<Post> enemyPosts = new ArrayList<Post>();
+        for (int j = 0; j < otherPlayerPosts.size(); j++) {
+          for (Post p : otherPlayerPosts.get(j))
+            enemyPosts.add(p);
+        }
+
+        // GO AFTER ONLY THE ENEMY's POSTS
+				//ArrayList<Post> enemyPosts = otherPlayerPosts.get(this.currentEnemyId);
+
 				Location enemyBase = this.enemyBaseLocs.get(this.currentEnemyId);
 				
 				boolean reachedGoal = kPair.move(enemyPosts, enemyBase);
