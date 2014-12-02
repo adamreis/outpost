@@ -36,7 +36,11 @@ public class KamikazePostPair {
 		for (Post p : targetPosts) {
 			double sToP = startingPoint.distanceTo(p);
 			double pToT = p.distanceTo(targetBase);
-			if (sToP < shortestDistance && pToT < distanceToTarget) {
+      System.out.println(sToP);
+      if (sToP < Player.parameters.outpostRadius) {
+        return p;
+      }
+			else if (sToP < shortestDistance && pToT < distanceToTarget) {
 				nearest = p;
 				shortestDistance = startingPoint.distanceTo(p);
 			}
@@ -117,9 +121,9 @@ public class KamikazePostPair {
 	}
 	
 	private void moveTowardLocation(Location targetLoc, Location targetBase) {
-    //System.out.println("moveTowardLocation called");
-		this.p1 = moveTowardTargetAndBase(p1, targetLoc, targetBase);
-    //this.p1 = this.p1.moveMinimizingDistanceFrom(targetLoc);
+    //move toward location, ignore location of base
+		//this.p1 = moveTowardTargetAndBase(p1, targetLoc, targetBase);
+    this.p1 = this.p1.moveMinimizingDistanceFrom(targetLoc);
 		if (this.p2.distanceTo(p1) > 1.0) {
 			this.p2 = this.p2.moveMinimizingDistanceFrom(this.p1);
 		}
