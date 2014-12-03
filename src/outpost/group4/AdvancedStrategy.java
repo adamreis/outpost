@@ -20,8 +20,8 @@ public class AdvancedStrategy implements Strategy {
     static final int WATER_COLLECTOR_MIN_SIZE = 3;
     static final int BASE_DEFENSE_MIN_SIZE = 2;
 
-    static final double WATER_COLLECTOR_RATIO = 0.2;
-    static final double EARLY_OFFENSE_RATIO = 0.75;
+    static final double WATER_COLLECTOR_RATIO = 0.25;
+    static final double EARLY_OFFENSE_RATIO = 0.7;
     static final double LATE_OFFENSE_RATIO = 0.44;
 
     int turn;
@@ -132,10 +132,10 @@ public class AdvancedStrategy implements Strategy {
             resource.add(p);
           }
 
-          //System.out.printf("water %f offense %f resource %f total %f\n", numWater, numOffense, numResource, total);
+          System.out.printf("water %f offense %f resource %f total %f\n", numWater, numOffense, numResource, total);
         }
 
-        //System.out.printf("turn %d defense %d shell %d offense %d\n", turn, defense.size(), shell.size(), offense.size());
+        System.out.printf("turn %d defense %d shell %d offense %d\n", turn, defense.size(), shell.size(), offense.size());
 
 //        System.out.println("Offense we are giving:");
 //        for (Post p : offense) System.out.println(p);

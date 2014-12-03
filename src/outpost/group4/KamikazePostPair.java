@@ -46,14 +46,13 @@ public class KamikazePostPair {
 		for (Post p : targetPosts) {
 			double sToP = startingPoint.distanceTo(p);
 			double pToT = p.distanceTo(targetBase);
-
 			if ((sToP + pToT < distanceToTarget + 10) && sToP < shortestDistance) {
 				nearest = p;
 				shortestDistance = startingPoint.distanceTo(p);
 			}
 		}
 
-		System.out.printf("targetBase: %s, nearest: %s\n", targetBase, nearest);
+		//System.out.printf("targetBase: %s, nearest: %s\n", targetBase, nearest);
 
 		return nearest;
 	}
@@ -68,7 +67,7 @@ public class KamikazePostPair {
 	}
 
 	public boolean move(ArrayList<Post> targetPosts, Location targetBase) {
-		System.out.printf("kPair [%s %s] ", this.p1, this.p2);
+		//System.out.printf("kPair [%s %s] ", this.p1, this.p2);
 
 		this.enemyBase = targetBase;
 		// Returns true iff p1 overtakes an enemy base
@@ -104,7 +103,7 @@ public class KamikazePostPair {
 		}
 
 		if (onTopOfEnemyBase()) {
-			System.out.println("targetBase reached! at " + this.p1);
+			//System.out.println("targetBase reached! at " + this.p1);
 //			System.out.printf("[%s %s]\n", this.p1, this.p2);
 			return true;
 		}
@@ -151,7 +150,7 @@ public class KamikazePostPair {
 //	}
 
 	private void moveApart(Location targetLoc, Location targetBase) {
-		ArrayList<Location> sPath = this.p1.shortestPathToLocation(targetBase);
+		ArrayList<Location> sPath = this.p1.shortestPathToLocation(targetLoc);
 		Location towardBase;
 		if (sPath.size() > 1) {
 			 towardBase = sPath.get(1);
@@ -170,7 +169,7 @@ public class KamikazePostPair {
 
 	private void moveTowardLocation(Location targetLoc, Location targetBase) {
 //		System.out.println("moveTowardLocation called");
-		ArrayList<Location> sPath = this.p1.shortestPathToLocation(targetBase);
+		ArrayList<Location> sPath = this.p1.shortestPathToLocation(targetLoc);
 		Location towardBase;
 		if (sPath.size() > 1) {
 			 towardBase = sPath.get(1);
