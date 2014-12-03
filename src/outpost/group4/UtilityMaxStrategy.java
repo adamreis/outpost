@@ -32,11 +32,12 @@ public class UtilityMaxStrategy implements Strategy {
 
         for (int i = 0; i < posts.size(); i++) {
             Post p = posts.get(i);
-            Post newPost = p;
+            Post newPost = new Post(p);
             int squareIndex = 0;
-            ArrayList<Location> path;
+            ArrayList<Location> path = new ArrayList<Location>();
+            boolean fresh = false;
 
-            GridSquare target;
+            GridSquare target = null;
             ArrayList<GridSquare> possibleTargets = targetMap.get(p);
 
             // if we already have a target:
@@ -51,7 +52,13 @@ public class UtilityMaxStrategy implements Strategy {
                   if (dist < (double) Player.parameters.outpostRadius && p.id > neighbor.id) {
                     // pick a new target
                     ArrayList<GridSquare> bestWaterSquares = Player.board.getBestResourceSquaresForPost(p, valueLand);
-                    target = bestWaterSquares.get(i);
+                    int index = i;
+                    GridSquare newTarget = target;
+                    while (newTarget.distanceTo(target) < Player.parameters.outpostRadius * 2.2 || path.size() <= 1) {
+                      target = bestWaterSquares.get(index);
+                      path = p.shortestPathToLocation(target);
+                      index++;
+                    }
                     System.out.printf("PICKING NEW TARGET %s WHEN AT TARGET %s \n", target, p);
                     break;
                   }
@@ -62,16 +69,23 @@ public class UtilityMaxStrategy implements Strategy {
             // if we do not have a target, grab a new one and move toward it
             else {
               ArrayList<GridSquare> bestWaterSquares = Player.board.getBestResourceSquaresForPost(p, valueLand);
-              target = bestWaterSquares.get(squareIndex);
+              while (path.size() <= 1) {
+                target = bestWaterSquares.get(squareIndex);
+                path = p.shortestPathToLocation(target);
+                squareIndex++;
+              }
               System.out.printf("FINDING FIRST TARGET %s WHEN AT LOCATIOn %s \n", target, p);
+              fresh = true;
             }
 
-            // move towards target
             path = p.shortestPathToLocation(target);
-
             int nextLocationIndex = (path.size() > 1) ? 1 : 0;
             newPost.x = path.get(nextLocationIndex).x;
             newPost.y = path.get(nextLocationIndex).y;
+
+            if (fresh) {
+              System.out.printf("OLD %s NEW %s\n", p, newPost);
+            }
 
             if (newTargetMap.get(newPost) == null) {
               newTargetMap.put(newPost, new ArrayList<GridSquare>());
@@ -82,7 +96,6 @@ public class UtilityMaxStrategy implements Strategy {
         }
 
         targetMap = newTargetMap;
-
         return newPosts;
     }
 
