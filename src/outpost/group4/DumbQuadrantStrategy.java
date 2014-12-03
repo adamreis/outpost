@@ -22,7 +22,8 @@ public class DumbQuadrantStrategy implements Strategy {
       Post bestNeighbor = neighbors.get(Player.random.nextInt(neighbors.size()));
 
       // sometimes move far away from base on purpose
-      if (Math.random() > 0.75) {
+      double prob = Player.parameters.requiredLand > 20 ? 0.92 : 0.75;
+      if (Math.random() > prob) {
         Collections.shuffle(neighbors);
 
         double furthestDistanceFromBase = 0;

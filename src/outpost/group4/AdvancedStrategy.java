@@ -25,7 +25,7 @@ public class AdvancedStrategy implements Strategy {
 
     static final double WATER_COLLECTOR_RATIO = 0.26;
     static final double EARLY_OFFENSE_RATIO = 0.69;
-    static final double LATE_OFFENSE_RATIO = 0.4;
+    static final double LATE_OFFENSE_RATIO = 0.48;
 
     double waterRatioHelper;
 
@@ -40,7 +40,7 @@ public class AdvancedStrategy implements Strategy {
         previousTurnResource = new ArrayList<Post>();
         trash = new ArrayList<Post>();
 
-        waterRatioHelper = -1;
+        waterRatioHelper = -100;
     }
 
     public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {
@@ -51,9 +51,9 @@ public class AdvancedStrategy implements Strategy {
           resourceStrategy = new DumbQuadrantStrategy();
         }
 
-        if (waterRatioHelper < 0) {
+        if (waterRatioHelper <= -1) {
           if (Player.parameters.requiredLand > 20) {
-            waterRatioHelper = 0.09;
+            waterRatioHelper = -0.08;
           }
           else {
             waterRatioHelper = 0.0;
@@ -111,14 +111,23 @@ public class AdvancedStrategy implements Strategy {
           }
         }
         
-        while (defense.size() < WATER_COLLECTOR_MIN_SIZE && shell.size() > 0) {
+        int waterCollectorMinimum = Player.parameters.requiredLand > 20 ? WATER_COLLECTOR_MIN_SIZE : WATER_COLLECTOR_MIN_SIZE - 2;
+        int landCollectorMinimum = Player.parameters.requiredLand > 20 ? 2 : 0;
+        int shellMinimum = Player.parameters.requiredLand > 20 ? 0 : BASE_DEFENSE_MIN_SIZE;
+        
+        while (defense.size() < waterCollectorMinimum && shell.size() > 0) {
         	Post p = shell.get(0);
         	shell.remove(p);
         	defense.add(p);
         } 
-        while (defense.size() < WATER_COLLECTOR_MIN_SIZE && resource.size() > 0) {
+        while (defense.size() < waterCollectorMinimum && resource.size() > 0) {
         	Post p = resource.get(0);
         	resource.remove(p);
+        	defense.add(p);
+        }
+        while (defense.size() < waterCollectorMinimum && offense.size() > 0) {
+        	Post p = offense.get(0);
+        	offense.remove(p);
         	defense.add(p);
         }
         
@@ -127,13 +136,16 @@ public class AdvancedStrategy implements Strategy {
         // assign some unassigned posts to water and base
         ArrayList<Post> veryUnassigned = new ArrayList<Post>();
         for (Post p : unassigned) {
-          if (defense.size() < WATER_COLLECTOR_MIN_SIZE) {
+          if (defense.size() < waterCollectorMinimum) {
             defense.add(p);
+          }
+          else if (resource.size() < landCollectorMinimum) {
+        	resource.add(p);
           }
           else if (offense.size() < OFFENSE_FIRST_PAIR_MIN_SIZE) {
             offense.add(p);
           }
-          else if (shell.size() < BASE_DEFENSE_MIN_SIZE) {
+          else if (shell.size() < shellMinimum) {
             shell.add(p);
           }
           else {
@@ -143,10 +155,11 @@ public class AdvancedStrategy implements Strategy {
 
         // assign rest based on ratios
         for (Post p : veryUnassigned) {
-          double numWater = Math.max(defense.size() - WATER_COLLECTOR_MIN_SIZE, 0);
+          double numWater = Math.max(defense.size() - waterCollectorMinimum, 0);
           double numOffense = offense.size();
           double numResource = resource.size();
-          double total = posts.size() - BASE_DEFENSE_MIN_SIZE - WATER_COLLECTOR_MIN_SIZE;
+          double total = posts.size() - shellMinimum - waterCollectorMinimum;
+          
           double offenseRatio = numOffense < 14? EARLY_OFFENSE_RATIO : LATE_OFFENSE_RATIO;
           offenseRatio -= waterRatioHelper;
           double waterRatio = WATER_COLLECTOR_RATIO + waterRatioHelper;

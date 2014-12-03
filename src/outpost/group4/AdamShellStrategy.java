@@ -52,7 +52,7 @@ public class AdamShellStrategy implements Strategy {
 			}
 		}
 		
-		if (this.homeBase.distanceTo(closestPost) < 10) {
+		if (this.homeBase.distanceTo(closestPost) < 20) {
 			newShellPair.move(closestPost);
 		} else {
 			newShellPair.move(this.homeBase);
