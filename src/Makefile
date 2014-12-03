@@ -3,6 +3,14 @@ PLAYER0=group4
 PLAYER1=dumb
 PLAYER2=dumb
 PLAYER3=dumb
+G1=group1
+G2=group2
+G3=group3
+G5=group5
+G6=group6
+G7=group7
+G8=group8
+G9=group9
 R=7
 L=12
 W=3
@@ -30,5 +38,12 @@ config3:
 config4:
 	java outpost.sim.Outpost map1 7 40 10 true $(PLAYER0) $(PLAYER1) $(PLAYER2) $(PLAYER3) 4444
 
+even:
+	java outpost.sim.Outpost map1 7 40 10 true $(G2) $(G4) $(G6) $(G8) 4444
+
+odd:
+	java outpost.sim.Outpost map1 7 40 10 true $(G1) $(G3) $(G4) $(G5) 4444
+
 compile:
 	javac outpost/sim/Outpost.java
+
