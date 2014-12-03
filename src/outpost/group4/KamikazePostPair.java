@@ -112,43 +112,6 @@ public class KamikazePostPair {
 
 	}
 
-//	private Post moveTowardTargetAndBase(Post p, Location target, Location base) {
-//		//pick the move minimizing distance from target that also brings you closer to base
-//		ArrayList<Post> minMoves = p.movesMinimizingDistanceFrom(target);
-//		for (Post next : minMoves) {
-//			if (next.distanceTo(base) < p.distanceTo(base)) {
-//				return next;
-//			}
-//		}
-//
-//		ArrayList<Location> sPath = p.shortestPathToLocation(base);
-//		Location towardBase;
-//		if (sPath.size() > 1) {
-//			 towardBase = sPath.get(1);
-//		} else {
-//			towardBase = sPath.get(0);
-//		}
-//
-//		double directDistance = towardBase.distanceTo(base);
-//
-//		double minDist = Integer.MAX_VALUE;
-//		Post minPost = null;
-//
-//		for (Post next : minMoves) {
-//			double totalDist = p.distanceTo(next) + next.distanceTo(base);
-//			if (totalDist < minDist){
-//				minDist = totalDist;
-//				minPost = next;
-//			}
-//		}
-//
-//		if (minDist < (directDistance + 15)) {
-//			return minPost;
-//		} else {
-//			return new Post(towardBase, p.id);
-//		}
-//	}
-
 	private void moveApart(Location targetLoc, Location targetBase) {
 		ArrayList<Location> sPath = this.p1.shortestPathToLocation(targetLoc);
 		Location towardBase;
