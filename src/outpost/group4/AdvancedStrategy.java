@@ -19,6 +19,7 @@ public class AdvancedStrategy implements Strategy {
 
     static final int WATER_COLLECTOR_MIN_SIZE = 3;
     static final int WATER_COLLECTOR_MAX_SIZE = 12;
+    static final int OFFENSE_FIRST_PAIR_MIN_SIZE = 2;
     static final int BASE_DEFENSE_MIN_SIZE = 2;
 
     static final double WATER_COLLECTOR_RATIO = 0.26;
@@ -50,7 +51,7 @@ public class AdvancedStrategy implements Strategy {
 
         if (waterRatioHelper < 0) {
           if (Player.parameters.requiredLand > 20) {
-            waterRatioHelper = 0.04;
+            waterRatioHelper = 0.055;
           }
           else {
             waterRatioHelper = 0.0;
@@ -119,6 +120,9 @@ public class AdvancedStrategy implements Strategy {
         for (Post p : unassigned) {
           if (defense.size() < WATER_COLLECTOR_MIN_SIZE) {
             defense.add(p);
+          }
+          else if (offense.size() < OFFENSE_FIRST_PAIR_MIN_SIZE) {
+            offense.add(p);
           }
           else if (shell.size() < BASE_DEFENSE_MIN_SIZE) {
             shell.add(p);

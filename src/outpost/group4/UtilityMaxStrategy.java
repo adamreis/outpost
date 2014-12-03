@@ -59,7 +59,7 @@ public class UtilityMaxStrategy implements Strategy {
                       path = p.shortestPathToLocation(target);
                       index++;
                     }
-                    System.out.printf("PICKING NEW TARGET %s WHEN AT TARGET %s \n", target, p);
+                    //System.out.printf("PICKING NEW TARGET %s WHEN AT TARGET %s \n", target, p);
                     break;
                   }
                 }
@@ -74,7 +74,7 @@ public class UtilityMaxStrategy implements Strategy {
                 path = p.shortestPathToLocation(target);
                 squareIndex++;
               }
-              System.out.printf("FINDING FIRST TARGET %s WHEN AT LOCATIOn %s \n", target, p);
+              //System.out.printf("FINDING FIRST TARGET %s WHEN AT LOCATIOn %s \n", target, p);
               fresh = true;
             }
 
