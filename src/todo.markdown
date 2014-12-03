@@ -7,5 +7,4 @@
 - [ ] kamikaze pairs shouldn't move off base
 - [ ] do not hardcode the resource collector cutoff number
 - [ ] figure out if we are about to be killed
-- [ ] write hasPathBack method 
   - [x] write a post-specific hasPathBack method (ian)
