@@ -46,6 +46,9 @@ public class KamikazePostPair {
 		for (Post p : targetPosts) {
 			double sToP = startingPoint.distanceTo(p);
 			double pToT = p.distanceTo(targetBase);
+			
+			
+			
 			if ((sToP + pToT < distanceToTarget + 10) && sToP < shortestDistance) {
 				nearest = p;
 				shortestDistance = startingPoint.distanceTo(p);
