@@ -36,7 +36,6 @@ public class KamikazePostPair {
 		for (Post p : targetPosts) {
 			double sToP = startingPoint.distanceTo(p);
 			double pToT = p.distanceTo(targetBase);
-      System.out.println(sToP);
       if (sToP < Player.parameters.outpostRadius) {
         return p;
       }
