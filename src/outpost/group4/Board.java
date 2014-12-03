@@ -14,6 +14,9 @@ public class Board {
     public ArrayList<ArrayList<Post>> otherPlayerPosts;
     public HashMap<Integer, HashSet<? extends Location>> ownersMap;
 
+    public ArrayList<GridSquare> allSquares;
+    public ArrayList<GridSquare> quadrantSquares;
+
     public Board(Point[] points, HashMap<Integer, HashSet<? extends Location>> map) {
         board = Conversions.gridSquaresFromPoints(points);
         ownersMap = map;
@@ -51,16 +54,31 @@ public class Board {
     }
 
     public ArrayList<GridSquare> getGridSquaresList(boolean landOnly) {
+        if (allSquares != null) return allSquares;
+
         ArrayList<GridSquare> squares = new ArrayList<GridSquare>();
+        quadrantSquares = new ArrayList<GridSquare>();
 
         for (GridSquare[] rowArray : board) {
             for (GridSquare square : rowArray) {
                 if (landOnly && square.water) continue;
                 squares.add(square);
+
+                if (Math.abs(square.x - Player.baseLoc.x) <= 50 && Math.abs(square.x - Player.baseLoc.x) <= 50) {
+                    quadrantSquares.add(square);
+                }
             }
         }
 
+        allSquares = squares;
         return squares;
+    }
+
+    public ArrayList<GridSquare> getQuadrantGridSquaresList(boolean landOnly) {
+      if (allSquares == null) {
+        getGridSquaresList(true);
+      }
+      return quadrantSquares;
     }
 
     // given an ArrayList of GridSquares, return only those in our quadrant
@@ -156,7 +174,7 @@ public class Board {
     public double resourceScoreForPost(GridSquare square, ArrayList<GridSquare> postSquares, boolean valueLand) {
         // blast water score cause we really care about water
         double waterValue = 1.0;
-        double landValue = valueLand? 0.25 : 0.0;
+        double landValue = valueLand? 0.12 : 0.0;
 
         double score = 0;
 
@@ -191,14 +209,21 @@ public class Board {
      * open to being changed.
      */
     public ArrayList<GridSquare> getBestResourceSquaresForPost(Post post, boolean valueLand) {
-        ArrayList<GridSquare> waterSquaresForPost = getGridSquaresList(true);
+        ArrayList<GridSquare> squaresForPost;
+        if (valueLand) {
+          squaresForPost = getQuadrantGridSquaresList(true);
+        }
+        else {
+          squaresForPost = getGridSquaresList(true);
+        }
+
         final ArrayList<GridSquare> postSquares = squaresWithinRadius(post);
         final Post relevantPost = post;
         final boolean shouldValueLand = valueLand;
-        final double distanceWeight = -0.58;
+        final double distanceWeight = valueLand? 0 : -0.55;
 
         // sort by water score
-        Collections.sort(waterSquaresForPost, new Comparator<GridSquare>() {
+        Collections.sort(squaresForPost, new Comparator<GridSquare>() {
             public int compare(GridSquare one, GridSquare other) {
                 double oneResourceScore   = resourceScoreForPost(one, postSquares, shouldValueLand) + (distanceWeight * relevantPost.distanceTo(one));
                 double otherResourceScore = resourceScoreForPost(other, postSquares, shouldValueLand) + (distanceWeight * relevantPost.distanceTo(other));
@@ -211,7 +236,7 @@ public class Board {
             }
         });
 
-        return waterSquaresForPost;
+        return squaresForPost;
     }
 
     public boolean weOwnLocation(Location location) {

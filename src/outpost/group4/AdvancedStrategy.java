@@ -21,8 +21,8 @@ public class AdvancedStrategy implements Strategy {
     static final int BASE_DEFENSE_MIN_SIZE = 2;
 
     static final double WATER_COLLECTOR_RATIO = 0.2;
-    static final double EARLY_OFFENSE_RATIO = 0.8;
-    static final double LATE_OFFENSE_RATIO = 0.35;
+    static final double EARLY_OFFENSE_RATIO = 0.75;
+    static final double LATE_OFFENSE_RATIO = 0.44;
 
     int turn;
 
@@ -40,7 +40,7 @@ public class AdvancedStrategy implements Strategy {
           defenseStrategy = new UtilityMaxStrategy(false);
           shellStrategy = new ShellStrategy();
           offenseStrategy = new SabotageStrategy(Player.knownID);
-          resourceStrategy = new UtilityMaxStrategy(true);
+          resourceStrategy = new DumbQuadrantStrategy();
         }
 
         turn += 1;
@@ -111,17 +111,19 @@ public class AdvancedStrategy implements Strategy {
           double numOffense = offense.size();
           double numResource = resource.size();
           double total = posts.size() - BASE_DEFENSE_MIN_SIZE;
-          double offenseRatio = numOffense > 40? EARLY_OFFENSE_RATIO : LATE_OFFENSE_RATIO;
+          double offenseRatio = numOffense < 40? EARLY_OFFENSE_RATIO : LATE_OFFENSE_RATIO;
 
-          if (numWater / total < WATER_COLLECTOR_RATIO) {
+          if (numWater / total <= WATER_COLLECTOR_RATIO) {
             defense.add(p);
           }
-          else if (numOffense / total < offenseRatio) {
+          else if (numOffense / total <= offenseRatio) {
             offense.add(p);
           }
           else {
             resource.add(p);
           }
+
+          //System.out.printf("water %f offense %f resource %f total %f\n", numWater, numOffense, numResource, total);
         }
 
         //System.out.printf("turn %d defense %d shell %d offense %d\n", turn, defense.size(), shell.size(), offense.size());

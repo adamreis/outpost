@@ -7,7 +7,7 @@ public class UtilityMaxStrategy implements Strategy {
     ArrayList<Post> posts;
     ArrayList<ArrayList<Post>> otherPlayerPosts;
     ArrayList<GridSquare> bestSquares;
-    ArrayList<GridSquare> postTargets;
+    HashMap<Location, ArrayList<GridSquare>> targetMap;
     int turn = 0;
     boolean valueLand;
 
@@ -20,52 +20,68 @@ public class UtilityMaxStrategy implements Strategy {
     }
 
     public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {
-        if (postTargets == null) {
-          postTargets = new ArrayList<GridSquare>();
+        if (targetMap == null) {
+          targetMap = new HashMap<Location, ArrayList<GridSquare>>();
         }
         turn += 1;
         this.posts = posts;
         this.otherPlayerPosts = otherPlayerPosts;
 
         ArrayList<Post> newPosts = new ArrayList<Post>();
+        HashMap<Location, ArrayList<GridSquare>> newTargetMap = new HashMap<Location, ArrayList<GridSquare>>();
 
         for (int i = 0; i < posts.size(); i++) {
             Post p = posts.get(i);
             Post newPost = p;
-            int squareIndex = p.id;
+            int squareIndex = 0;
             ArrayList<Location> path;
 
+            GridSquare target;
+            ArrayList<GridSquare> possibleTargets = targetMap.get(p);
+
             // if we already have a target:
-            if (squareIndex < postTargets.size()) {
+            if (possibleTargets != null && possibleTargets.size() > 0) {
+              target = possibleTargets.get(0);
+              possibleTargets.remove(target);
+
               // if we are at our target, move away from our own posts that were there first
-              if (p.x == postTargets.get(squareIndex).x && p.y == postTargets.get(squareIndex).y) {
+              if (p.x == target.x && p.y == target.y) {
                 for (Post neighbor : posts) {
                   double dist = p.distanceTo(neighbor);
                   if (dist < (double) Player.parameters.outpostRadius && p.id > neighbor.id) {
                     // pick a new target
                     ArrayList<GridSquare> bestWaterSquares = Player.board.getBestResourceSquaresForPost(p, valueLand);
-                    postTargets.set(squareIndex, bestWaterSquares.get(2 * squareIndex));
+                    target = bestWaterSquares.get(i);
+                    System.out.printf("PICKING NEW TARGET %s WHEN AT TARGET %s \n", target, p);
+                    break;
                   }
                 }
               }
-
-              // move towards target
-              path = p.shortestPathToLocation(postTargets.get(squareIndex));
             }
 
             // if we do not have a target, grab a new one and move toward it
             else {
               ArrayList<GridSquare> bestWaterSquares = Player.board.getBestResourceSquaresForPost(p, valueLand);
-              GridSquare target = bestWaterSquares.get(squareIndex);
-              postTargets.add(target);
-              path = p.shortestPathToLocation(target);
+              target = bestWaterSquares.get(squareIndex);
+              System.out.printf("FINDING FIRST TARGET %s WHEN AT LOCATIOn %s \n", target, p);
             }
+
+            // move towards target
+            path = p.shortestPathToLocation(target);
 
             int nextLocationIndex = (path.size() > 1) ? 1 : 0;
             newPost.x = path.get(nextLocationIndex).x;
             newPost.y = path.get(nextLocationIndex).y;
+
+            if (newTargetMap.get(newPost) == null) {
+              newTargetMap.put(newPost, new ArrayList<GridSquare>());
+            }
+            newTargetMap.get(newPost).add(target);
+
             newPosts.add(newPost);
         }
+
+        targetMap = newTargetMap;
 
         return newPosts;
     }

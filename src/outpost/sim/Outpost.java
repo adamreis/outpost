@@ -46,7 +46,7 @@ public class Outpost
 	static Player[] players = new Player[4];
 
 	static int L; //land cells number to afford outpost
-	static int W; 
+	static int W;
 
 	static int MAX_TICKS = 10000;
 	static ArrayList<Pair> searchlist = new ArrayList();
@@ -60,7 +60,7 @@ public class Outpost
 	static String group1 = null;
 	static String group2 = null;
 	static String group3 = null;
-	
+
 	static ArrayList<ArrayList<Pair>> king_outpostlist = new ArrayList<ArrayList<Pair>>();
 
 	// list files below a certain directory
@@ -215,7 +215,7 @@ public class Outpost
 				label2.setForeground(Color.BLACK);
 				label2.setVisible(true);
 					//System.err.printf("Player %d control water %f, land %f\n", i, water[i], soil[i]);
-				
+
 				return false;
 			}
 			else {
@@ -264,13 +264,13 @@ public class Outpost
 
 			f = new JFrame("Outposts");
 			field = new FieldPanel(1.0 * FIELD_SIZE / dimension);
-			next = new JButton("Next"); 
+			next = new JButton("Next");
 			next.addActionListener(this);
 			next.setBounds(0, 0, 100, 50);
-			next10 = new JButton("Next10"); 
+			next10 = new JButton("Next10");
 			next10.addActionListener(this);
 			next10.setBounds(100, 0, 100, 50);
-			next50 = new JButton("Next5000"); 
+			next50 = new JButton("Next5000");
 			next50.addActionListener(this);
 			next50.setBounds(200, 0, 100, 50);
 
@@ -400,7 +400,7 @@ public class Outpost
 			}
 
 		public void drawPoint(Graphics2D g2, Pair pr, int id) {
-			if (id == 0) 
+			if (id == 0)
 				g2.setPaint(Color.WHITE);
 			else if (id == 1)
 				g2.setPaint(Color.GREEN.darker());
@@ -521,7 +521,7 @@ public class Outpost
 	void updatemap(ArrayList<movePair> nextlist, int id) {
 		for (int i=0; i<nextlist.size(); i++) {
 			movePair mpr = nextlist.get(i);
-			
+
 			if (mpr.id<king_outpostlist.get(id).size()){
 				Pair current = king_outpostlist.get(id).get(mpr.id);
 				Pair next = mpr.pr;
@@ -536,12 +536,12 @@ public class Outpost
 				}
 
 			}
-			
+
 		}
-		
+
 		updatePoints();
 	}
-	
+
 	void updatePoints() {
 		for (int i=0; i<size; i++) {
 			for (int j=0; j<size; j++) {
@@ -628,23 +628,23 @@ public class Outpost
 				//System.out.print(group0);
 				if (id==0) {
 					System.err.print(group0);
-					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", p.x, p.y);
-					
+					//System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", p.x, p.y);
+
 				}
 				if (id==1) {
 					System.err.print(group1);
-					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", p.x, p.y);
-					
+					//System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", p.x, p.y);
+
 				}
 				if (id==2) {
 					System.err.print(group2);
-					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", p.x, p.y);
-					
+					//System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", p.x, p.y);
+
 				}
 				if (id==3) {
 					System.err.print(group3);
-					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", p.x, p.y);
-					
+					//System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", p.x, p.y);
+
 				}
 				toremove.add(new Pair(id, i));
 				//king_outpostlist.get(id).remove(i);
@@ -696,7 +696,7 @@ public class Outpost
 						if (!has) {
 							supplyline(pt, id);
 						}
-					}	
+					}
 				}
 			}
 		}
@@ -777,11 +777,11 @@ public class Outpost
 		//}
 		return prlist;
 	}
-	
+
 
 
 	void playStep() {
-		tick++;        
+		tick++;
 
 		// move the player dogs
 		if (tick % 10 == 0 && tick !=0){
@@ -800,7 +800,7 @@ public class Outpost
 				if (king_outpostlist.get(d).size()>noutpost[d]) {
 					int removedid = players[d].delete(king_outpostlist, grid);
 					king_outpostlist.get(d).remove(removedid);
-					System.err.printf("player %d delete outpost %d\n", d, removedid);
+					//System.err.printf("player %d delete outpost %d\n", d, removedid);
 				}
 				}
 				if (d==0)
@@ -814,11 +814,11 @@ public class Outpost
 				/*for (int i=0; i<nextlist.size(); i++) {
 					//movePair next = new movePair();
 					//next = nextlist.get(i);
-					
+
 					validateMove(nextlist, d);
-					
+
 					updatemap();
-					
+
 				}*/
 
 			} catch (Exception e) {
@@ -837,44 +837,44 @@ public class Outpost
 			//for (int i=0; i<nextlist0.size(); i++) {
 				//movePair next = new movePair();
 				//next = nextlist.get(i);
-				
+
 				toremove.add(validateMove(nextlist0, d));
-				
+
 				//updatemap();
-				
+
 			//}
 			}
 			if (d==1) {
 				//for (int i=0; i<nextlist1.size(); i++) {
 					//movePair next = new movePair();
 					//next = nextlist.get(i);
-					
+
 					toremove.add(validateMove(nextlist1, d));
-					
+
 					//updatemap();
-					
+
 				//}
 			}
 			if (d==2) {
 			//for (int i=0; i<nextlist2.size(); i++) {
 				//movePair next = new movePair();
 				//next = nextlist.get(i);
-				
+
 				toremove.add(validateMove(nextlist2, d));
-				
+
 				//updatemap();
-				
+
 			//}
 			}
 			if (d==3) {
 				//for (int i=0; i<nextlist3.size(); i++) {
 					//movePair next = new movePair();
 					//next = nextlist.get(i);
-					
+
 					toremove.add(validateMove(nextlist3, d));
-					
+
 					//updatemap();
-					
+
 				//}
 			}
 			}
@@ -884,7 +884,7 @@ public class Outpost
 				king_outpostlist.get(toremove.get(i).get(j).x).remove(toremove.get(i).get(j).y);
 				System.out.printf("(%d, %d)",toremove.get(i).get(j).x, toremove.get(i).get(j).y);
 			}
-			
+
 		}
 		/*for (int i=0; i<4; i++) {
 			for (int j=0; j<king_outpostlist.get(i).size(); j++) {
@@ -900,7 +900,7 @@ public class Outpost
 	/*	if (tick == nrounds) {
 			calculateres();
 			for (int i=0; i<4; i++) {
-				
+
 				System.err.printf("Player %d control water %f, land %f\n", i, water[i], soil[i]);
 			}
 		}*/
@@ -963,12 +963,12 @@ public class Outpost
 				grid[(size-pr.y)*size+pr.x].water = true;
 				grid[(100-pr.x)*size+(100-pr.y)].water = true;
 				grid[pr.y*size+100-pr.x].water = true;*/
-				
+
 				grid[pr.x*size+pr.y].water = true;
 				grid[(size-pr.y-1)*size+pr.x].water = true;
 				grid[(size-pr.x-1)*size+(size-pr.y-1)].water = true;
 				grid[pr.y*size+size-pr.x-1].water = true;
-				
+
 				//grid[(100-pr.x)*size+pr.y].water = true;
 				//grid[(100-pr.x)*size+100-pr.y].water = true;
 			}
@@ -1002,7 +1002,7 @@ public class Outpost
 			W = Integer.parseInt(args[3]);
 		if (args.length > 4)
 			gui = Boolean.parseBoolean(args[4]);
-		if (args.length >5) 
+		if (args.length >5)
 			group0 = args[5];
 		if (args.length>6)
 			group1 = args[6];
@@ -1031,7 +1031,7 @@ public class Outpost
 
 		game.playgui();
 
-	}        
+	}
 
 	int tick = 0;
 
