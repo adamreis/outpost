@@ -11,21 +11,31 @@ public class KamikazePostPair {
 	public State state;
 	public Post p1;
 	public Post p2;
+	public int enemyId;
+	public Location enemyBase;
 	private boolean isStalled;
-	public boolean reachedGoal;
 	
 	public KamikazePostPair(Post p1, Post p2) {
 		this.p1 = p1;
 		this.p2 = p2;
 		this.isStalled = false;
-		this.reachedGoal = false;
+		this.enemyId = -1;
+		this.enemyBase = new Location(999999999,99999999);
 	}
 	
 	public KamikazePostPair(KamikazePostPair kPair) {
 		this.p1 = new Post(kPair.p1);
 		this.p2 = new Post(kPair.p2);
 		this.isStalled = kPair.isStalled;
-		this.reachedGoal = kPair.reachedGoal;
+		this.enemyId = kPair.enemyId;
+		this.enemyBase = kPair.enemyBase;
+	}
+	
+	public boolean onTopOfEnemyBase() {
+		if (this.p1.distanceTo(this.enemyBase) == 0 || this.p2.distanceTo(this.enemyBase) == 0) {
+			return true; // because this won't be the first time
+		}
+		return false;
 	}
 	
 	private Location nearestLocationTowardTargetBase(Post startingPoint, ArrayList<Post> targetPosts, Location targetBase){
@@ -36,15 +46,13 @@ public class KamikazePostPair {
 		for (Post p : targetPosts) {
 			double sToP = startingPoint.distanceTo(p);
 			double pToT = p.distanceTo(targetBase);
-      System.out.println(sToP);
-      if (sToP < Player.parameters.outpostRadius) {
-        return p;
-      }
-			else if (sToP < shortestDistance && pToT < distanceToTarget) {
+			if ((sToP + pToT < distanceToTarget + 10) && sToP < shortestDistance) {
 				nearest = p;
 				shortestDistance = startingPoint.distanceTo(p);
 			}
 		}
+		
+		System.out.printf("targetBase: %s, nearest: %s\n", targetBase, nearest);
 		
 		return nearest;
 	}
@@ -59,14 +67,17 @@ public class KamikazePostPair {
 	}
 	
 	public boolean move(ArrayList<Post> targetPosts, Location targetBase) {
+		System.out.printf("kPair [%s %s] ", this.p1, this.p2);
+		
+		this.enemyBase = targetBase;
 		// Returns true iff p1 overtakes an enemy base
-		if (this.reachedGoal) {
-			return false; // because this won't be the first time
+		if (onTopOfEnemyBase()) {
+//			System.out.printf("[%s %s]\n", this.p1, this.p2);
+			return true;
 		}
 		
 		updateState();
 		Location targetLoc = nearestLocationTowardTargetBase(this.p1, targetPosts, targetBase);
-    //Location targetLoc = this.p1.nearestLocation(targetPosts);
 		
 		switch (this.state) {
 			case CONNECTED: 
@@ -91,26 +102,62 @@ public class KamikazePostPair {
 			default: break;
 		}
 		
-		if (this.p1.distanceTo(targetBase) == 0) {
+		if (onTopOfEnemyBase()) {
 			System.out.println("targetBase reached! at " + this.p1);
-			this.reachedGoal = true;
+//			System.out.printf("[%s %s]\n", this.p1, this.p2);
+			return true;
 		}
-		return this.reachedGoal;
+//		System.out.printf("[%s %s]\n", this.p1, this.p2);
+		return false;
+		
 	}
 	
-	private Post moveTowardTargetAndBase(Post p, Location target, Location base) {
-		//pick the move minimizing distance from target that also brings you closer to base
-		for (Post next : p.movesMinimizingDistanceFrom(target)) {
-			if (next.distanceTo(base) < p.distanceTo(base)) {
-				return next;
-			}
-		}
-		return p.moveMinimizingDistanceFrom(base);
-	}
+//	private Post moveTowardTargetAndBase(Post p, Location target, Location base) {
+//		//pick the move minimizing distance from target that also brings you closer to base
+//		ArrayList<Post> minMoves = p.movesMinimizingDistanceFrom(target);
+//		for (Post next : minMoves) {
+//			if (next.distanceTo(base) < p.distanceTo(base)) {
+//				return next;
+//			}
+//		}
+//		
+//		ArrayList<Location> sPath = p.shortestPathToLocation(base); 
+//		Location towardBase;
+//		if (sPath.size() > 1) {
+//			 towardBase = sPath.get(1);
+//		} else {
+//			towardBase = sPath.get(0);
+//		}
+//		 
+//		double directDistance = towardBase.distanceTo(base);
+//
+//		double minDist = Integer.MAX_VALUE;
+//		Post minPost = null;
+//		
+//		for (Post next : minMoves) {
+//			double totalDist = p.distanceTo(next) + next.distanceTo(base);
+//			if (totalDist < minDist){
+//				minDist = totalDist;
+//				minPost = next;
+//			}
+//		}
+//		
+//		if (minDist < (directDistance + 15)) {
+//			return minPost;
+//		} else {
+//			return new Post(towardBase, p.id);
+//		}
+//	}
 	
 	private void moveApart(Location targetLoc, Location targetBase) {
-		this.p1 = moveTowardTargetAndBase(p1, targetLoc, targetBase);
-    //this.p1 = this.p1.moveMinimizingDistanceFrom(targetLoc);
+		ArrayList<Location> sPath = this.p1.shortestPathToLocation(targetBase); 
+		Location towardBase;
+		if (sPath.size() > 1) {
+			 towardBase = sPath.get(1);
+		} else {
+			towardBase = sPath.get(0);
+		}
+		this.p1 = new Post(towardBase, this.p1.id);
 	}
 	
 	private void moveTogether() {
@@ -121,9 +168,16 @@ public class KamikazePostPair {
 	}
 	
 	private void moveTowardLocation(Location targetLoc, Location targetBase) {
-    //move toward location, ignore location of base
-		//this.p1 = moveTowardTargetAndBase(p1, targetLoc, targetBase);
-    this.p1 = this.p1.moveMinimizingDistanceFrom(targetLoc);
+//		System.out.println("moveTowardLocation called");
+		ArrayList<Location> sPath = this.p1.shortestPathToLocation(targetBase); 
+		Location towardBase;
+		if (sPath.size() > 1) {
+			 towardBase = sPath.get(1);
+		} else {
+			towardBase = sPath.get(0);
+		}
+		this.p1 = new Post(towardBase, this.p1.id);
+		
 		if (this.p2.distanceTo(p1) > 1.0) {
 			this.p2 = this.p2.moveMinimizingDistanceFrom(this.p1);
 		}

@@ -18,7 +18,7 @@ public class Player extends outpost.sim.Player {
 	protected static GameParameters parameters;
 	protected static Board board;
 	protected static int knownID;
-
+	
 	public Player(int id) {
 		super(id);
 
@@ -55,7 +55,14 @@ public class Player extends outpost.sim.Player {
 
 		// increment the turn
 		turn += 1;
-
+		
+		ArrayList<Pair> ourPairs = outpostList.get(id);
+		for (int i = 0; i < ourPairs.size(); i++) {
+			newPosts.get(i).id = i;
+			ourPairs.get(i).x = newPosts.get(i).x;
+			ourPairs.get(i).y = newPosts.get(i).y;
+		}
+		
 		// convert back from custom classes and return
 		return Conversions.movePairsFromPosts(newPosts);
 	}
