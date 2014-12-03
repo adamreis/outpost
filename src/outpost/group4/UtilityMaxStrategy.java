@@ -9,9 +9,13 @@ public class UtilityMaxStrategy implements Strategy {
     ArrayList<GridSquare> bestSquares;
     ArrayList<GridSquare> postTargets;
     int turn = 0;
+    boolean valueLand;
+
+    public UtilityMaxStrategy(boolean shouldValueLand) {
+      valueLand = shouldValueLand;
+    }
 
     public int delete(ArrayList<Post> posts) {
-      ;
       return -1;
     }
 
@@ -23,10 +27,7 @@ public class UtilityMaxStrategy implements Strategy {
         this.posts = posts;
         this.otherPlayerPosts = otherPlayerPosts;
 
-
         ArrayList<Post> newPosts = new ArrayList<Post>();
-        BoardHeuristic waterHeuristic = new MaxWaterHeuristic(Player.board);
-        BoardHeuristic heuristic = new DistanceWeighingHeuristic(waterHeuristic);
 
         for (int i = 0; i < posts.size(); i++) {
             Post p = posts.get(i);
@@ -42,7 +43,7 @@ public class UtilityMaxStrategy implements Strategy {
                   double dist = p.distanceTo(neighbor);
                   if (dist < (double) Player.parameters.outpostRadius && p.id > neighbor.id) {
                     // pick a new target
-                    ArrayList<GridSquare> bestWaterSquares = Player.board.getBestResourceSquaresForPost(p, false);
+                    ArrayList<GridSquare> bestWaterSquares = Player.board.getBestResourceSquaresForPost(p, valueLand);
                     postTargets.set(squareIndex, bestWaterSquares.get(2 * squareIndex));
                   }
                 }
@@ -54,7 +55,7 @@ public class UtilityMaxStrategy implements Strategy {
 
             // if we do not have a target, grab a new one and move toward it
             else {
-              ArrayList<GridSquare> bestWaterSquares = Player.board.getBestResourceSquaresForPost(p, false);
+              ArrayList<GridSquare> bestWaterSquares = Player.board.getBestResourceSquaresForPost(p, valueLand);
               GridSquare target = bestWaterSquares.get(squareIndex);
               postTargets.add(target);
               path = p.shortestPathToLocation(target);

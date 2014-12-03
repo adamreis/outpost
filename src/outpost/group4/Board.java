@@ -195,7 +195,7 @@ public class Board {
         final ArrayList<GridSquare> postSquares = squaresWithinRadius(post);
         final Post relevantPost = post;
         final boolean shouldValueLand = valueLand;
-        final double distanceWeight = -0.65;
+        final double distanceWeight = -0.58;
 
         // sort by water score
         Collections.sort(waterSquaresForPost, new Comparator<GridSquare>() {
