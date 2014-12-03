@@ -9,10 +9,10 @@ public class AdvancedStrategy implements Strategy {
     Strategy offenseStrategy;
     Strategy resourceStrategy;
 
-    HashSet<Post> previousTurnDefense;
-    HashSet<Post> previousTurnShell;
-    HashSet<Post> previousTurnOffense;
-    HashSet<Post> previousTurnResource;
+    ArrayList<Post> previousTurnDefense;
+    ArrayList<Post> previousTurnShell;
+    ArrayList<Post> previousTurnOffense;
+    ArrayList<Post> previousTurnResource;
 
     HashSet<Location> controlledLand;
     HashSet<Location> controlledWater;
@@ -29,10 +29,10 @@ public class AdvancedStrategy implements Strategy {
     public AdvancedStrategy() {
         turn = 0;
 
-        previousTurnDefense = new HashSet<Post>();
-        previousTurnShell = new HashSet<Post>();
-        previousTurnOffense = new HashSet<Post>();
-        previousTurnResource = new HashSet<Post>();
+        previousTurnDefense = new ArrayList<Post>();
+        previousTurnShell = new ArrayList<Post>();
+        previousTurnOffense = new ArrayList<Post>();
+        previousTurnResource = new ArrayList<Post>();
     }
 
     public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {
@@ -41,6 +41,14 @@ public class AdvancedStrategy implements Strategy {
           shellStrategy = new ShellStrategy();
           offenseStrategy = new SabotageStrategy(Player.knownID);
           resourceStrategy = new DumbQuadrantStrategy();
+        }
+
+        HashMap<Location, ArrayList<Integer>> idmap = new HashMap<Location, ArrayList<Integer>>();
+        for (int i = 0; i < posts.size(); i++) {
+        	Post p = posts.get(i);
+        	if (idmap.get(p) == null) idmap.put(p, new ArrayList<Integer>());
+        	ArrayList<Integer> ids = idmap.get(p);
+        	ids.add(i);
         }
 
         turn += 1;
@@ -85,6 +93,7 @@ public class AdvancedStrategy implements Strategy {
             previousTurnResource.remove(p);
           }
           else {
+//        	System.out.println("unassigned: " + p);
             unassigned.add(p);
           }
         }
@@ -128,16 +137,19 @@ public class AdvancedStrategy implements Strategy {
 
         //System.out.printf("turn %d defense %d shell %d offense %d\n", turn, defense.size(), shell.size(), offense.size());
 
+//        System.out.println("Offense we are giving:");
+//        for (Post p : offense) System.out.println(p);
+
         ArrayList<Post> newPosts = new ArrayList<Post>();
         ArrayList<Post> newDefense = defenseStrategy.move(otherPlayerPosts, defense, newSeason);
         ArrayList<Post> newShell = shellStrategy.move(otherPlayerPosts, shell, newSeason);
         ArrayList<Post> newOffense = offenseStrategy.move(otherPlayerPosts, offense, newSeason);
         ArrayList<Post> newResource = resourceStrategy.move(otherPlayerPosts, resource, newSeason);
 
-        previousTurnDefense.clear();
-        previousTurnShell.clear();
-        previousTurnOffense.clear();
-        previousTurnResource.clear();
+        previousTurnDefense = new ArrayList<Post>();
+        previousTurnShell = new ArrayList<Post>();
+        previousTurnOffense = new ArrayList<Post>();
+        previousTurnResource = new ArrayList<Post>();
 
         for (Post p : newDefense) {
           newPosts.add(p);

@@ -12,7 +12,7 @@ public class Conversions {
 		ArrayList<movePair> pairs = new ArrayList<movePair>();
 
 		for (Post post : posts) {
-//			System.err.println("post: " + post);
+//			System.err.println("post: " + post + " // id: " + post.id);
 			pairs.add(new movePair(post.id, new Pair(post.x, post.y)));
 		}
 		return pairs;
@@ -51,13 +51,13 @@ public class Conversions {
 		Location baseLoc;
 		int size = 100;
 		switch (id) {
-			case 1: baseLoc = new Location(size-1, 0);
+			case 1: baseLoc = new Location(size-2, 1);
 					break;
-			case 2: baseLoc = new Location(size-1, size-1);
+			case 2: baseLoc = new Location(size-2, size-2);
 					break;
-			case 3: baseLoc = new Location(0, size-1);
+			case 3: baseLoc = new Location(1, size-2);
 					break;
-			default: baseLoc = new Location(0, 0);
+			default: baseLoc = new Location(1, 1);
 					break;
 		}
 		return baseLoc;

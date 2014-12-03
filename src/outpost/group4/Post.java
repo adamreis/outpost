@@ -33,9 +33,6 @@ public class Post extends Location {
 		return new Post(x, y, id);
 	}
 
-	public String toString() {
-		return "outpost #" + this.id + ": " + super.toString();
-	}
 
 	public ArrayList<Post> adjacentPosts() {
 		ArrayList<Location> locations = super.adjacentLocations();
