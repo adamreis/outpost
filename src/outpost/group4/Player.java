@@ -18,13 +18,15 @@ public class Player extends outpost.sim.Player {
 	protected static GameParameters parameters;
 	protected static Board board;
 	protected static int knownID;
-
+	
 	public Player(int id) {
 		super(id);
 
 		knownID = id;
 
-		this.strategy = new UtilityMaxStrategy();
+    // this.strategy = new UtilityMaxStrategy();
+		// this.strategy = new SabotageStrategy(id);
+    this.strategy = new AdvancedStrategy();
 
 		this.turn = 0;
 	}
@@ -34,19 +36,14 @@ public class Player extends outpost.sim.Player {
 	public int delete(ArrayList<ArrayList<Pair>> outpostList, Point[] grid) {
 		ArrayList<Post> posts = Conversions.postsFromPairs(outpostList.get(this.id));
 
-		Post nearestPost = (Post) this.baseLoc.nearestLocation(posts);
-		int del = posts.indexOf(nearestPost);
-
-		if (del < 0) del = random.nextInt(outpostList.get(id).size());
-
-		return del;
+    return this.strategy.delete(posts);
 	}
 
 	public ArrayList<movePair> move(ArrayList<ArrayList<Pair>> outpostList, Point[] grid, int r, int L, int W, int T) {
 		// initialize the goods if necessary
 		if (Player.parameters == null) {
 			baseLoc = new Location(outpostList.get(this.id).get(0));
-			Player.parameters = new GameParameters(r, L, W, T, SIZE);
+			Player.parameters = new GameParameters(r, L, W, T, SIZE, this.id, baseLoc);
 		}
 
 		// create the static known board
@@ -58,7 +55,14 @@ public class Player extends outpost.sim.Player {
 
 		// increment the turn
 		turn += 1;
-
+		
+		ArrayList<Pair> ourPairs = outpostList.get(id);
+		for (int i = 0; i < ourPairs.size(); i++) {
+			newPosts.get(i).id = i;
+			ourPairs.get(i).x = newPosts.get(i).x;
+			ourPairs.get(i).y = newPosts.get(i).y;
+		}
+		
 		// convert back from custom classes and return
 		return Conversions.movePairsFromPosts(newPosts);
 	}

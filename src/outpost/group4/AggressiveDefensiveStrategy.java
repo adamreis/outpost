@@ -27,6 +27,11 @@ public class AggressiveDefensiveStrategy implements Strategy {
       return newPosts;
     }
 
+    public int delete(ArrayList<Post> posts) {
+      ;
+      return -1;
+    }
+
     public Post aggressiveMove(Post p) {
       Post newPost = null;
 

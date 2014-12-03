@@ -66,8 +66,6 @@ public class Location {
 		return l1.x == l2.x && l1.y == l2.y;
 	}
 
-
-
 	static public boolean nearAny(Location target, ArrayList<Location> locations, double d) {
 		for (Location location : locations) {
 			if (distanceTo(target, location) < d)
@@ -76,6 +74,8 @@ public class Location {
 
 		return false;
 	}
+
+
 
 	public Location nearestLocation(ArrayList<? extends Location> locations) {
 		Location nearestLocation = null;
@@ -157,6 +157,13 @@ public class Location {
 		}
 
 		return path;
+	}
+
+	public void updateLocationWithShortestPathToTarget(Location target) {
+		ArrayList<Location> path = this.shortestPathToLocation(target);
+		int nextLocationIndex = (path.size() > 1)? 1 : 0;
+		this.x = path.get(nextLocationIndex).x;
+		this.y = path.get(nextLocationIndex).y;
 	}
 
 }

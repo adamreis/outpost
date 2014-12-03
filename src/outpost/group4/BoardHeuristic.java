@@ -35,7 +35,7 @@ public abstract class BoardHeuristic {
     }
 
     public ArrayList<GridSquare> getSortedSquares() {
-        ArrayList<GridSquare> squares = board.getGridSquaresList();
+        ArrayList<GridSquare> squares = board.getGridSquaresList(false);
 
         Collections.sort(squares, new Comparator<GridSquare>() {
             public int compare(GridSquare one, GridSquare other) {

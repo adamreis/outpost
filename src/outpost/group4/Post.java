@@ -24,9 +24,15 @@ public class Post extends Location {
 		this.id = id;
 	}
 
-	public String toString() {
-		return "outpost #" + this.id + ": " + super.toString();
+	public Post(Post post) {
+		super(post.x, post.y);
+		this.id = post.id;
 	}
+
+	public Post copy() {
+		return new Post(x, y, id);
+	}
+
 
 	public ArrayList<Post> adjacentPosts() {
 		ArrayList<Location> locations = super.adjacentLocations();
@@ -71,6 +77,43 @@ public class Post extends Location {
 		return (Post) nearestLocation(posts);
 	}
 
+  public boolean hasPathBack() {
+    int size = Player.parameters.size;
+    GridSquare[][] gridSquares = Player.board.getGridSquares();
+    Location baseLoc = Player.baseLoc;  
+
+		// floodfill from baseLoc
+		int[] cx = {0, 0, 1, -1};
+		int[] cy = {1, -1, 0, 0};
+
+		boolean[][] vst = new boolean[size][size];
+		for (int i = 0; i < size; ++i)
+			for (int j = 0; j < size; ++j)
+				vst[i][j] = false;
+		vst[baseLoc.x][baseLoc.y] = true;
+
+		Queue<Location> q = new LinkedList<Location>();
+		q.add(baseLoc);
+		while (!q.isEmpty()) {
+			Location loc = q.poll();
+			for (int i = 0; i < 4; ++i) {
+				int x = loc.x + cx[i], y = loc.y + cy[i];
+				if (x < 0 || x >= size || y < 0 || y >= size || vst[x][y]) continue;
+        GridSquare gs = gridSquares[loc.x][loc.y];
+				if (!gs.water && (gs.owners.size() == 0 || (gs.owners.size() == 1 && gs.owners.get(0).x == Player.knownID))) {
+					vst[x][y] = true;
+					q.add(new Location(x, y));
+				}
+			}
+		}
+    
+    if (!vst[this.x][this.y])
+      return false;   
+    else
+      return true;
+  }
+
+
   public GridSquare furthestWater() {
       GridSquare[][] gridSquares = Player.board.getGridSquares();
       GridSquare furthestWater = null;
@@ -114,19 +157,27 @@ public class Post extends Location {
   }
 
 	public Post moveMinimizingDistanceFrom(Location loc) {
-		Post nearestPost = null;
-		double minDist = distanceTo(loc);
+		return movesMinimizingDistanceFrom(loc).get(0);
+	}
+
+	public ArrayList<Post> movesMinimizingDistanceFrom(Location loc) {
+		ArrayList<Post> nearestPosts = new ArrayList<Post>();
+		nearestPosts.add(this);
+
 		ArrayList<Post> possibleMoves = adjacentPosts();
 
 		for (Post possiblePost : possibleMoves) {
-			double dist = distanceTo(loc, possiblePost);
-			if (dist < minDist) {
-				minDist = dist;
-				nearestPost = possiblePost;
+			double curDist = possiblePost.distanceTo(loc);
+			double bestDist = nearestPosts.get(0).distanceTo(loc);
+			if (curDist == bestDist) {
+				nearestPosts.add(possiblePost);
+			} else if (curDist < bestDist) {
+				nearestPosts.clear();
+				nearestPosts.add(possiblePost);
 			}
 		}
 
-		return nearestPost;
+		return nearestPosts;
 	}
 
 	public Post moveMaximizingDistanceFrom(Location loc) {
