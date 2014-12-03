@@ -538,6 +538,11 @@ public class Outpost
 			}
 			
 		}
+		
+		updatePoints();
+	}
+	
+	void updatePoints() {
 		for (int i=0; i<size; i++) {
 			for (int j=0; j<size; j++) {
 				updatePoint(grid[i*size+j]);
@@ -623,22 +628,22 @@ public class Outpost
 				//System.out.print(group0);
 				if (id==0) {
 					System.err.print(group0);
-					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", id, p.x, p.y);
+					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", p.x, p.y);
 					
 				}
 				if (id==1) {
 					System.err.print(group1);
-					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", id, p.x, p.y);
+					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", p.x, p.y);
 					
 				}
 				if (id==2) {
 					System.err.print(group2);
-					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", id, p.x, p.y);
+					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", p.x, p.y);
 					
 				}
 				if (id==3) {
 					System.err.print(group3);
-					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", id, p.x, p.y);
+					System.err.printf(" outpost (%d, %d) cannot find a supplyline back \n", p.x, p.y);
 					
 				}
 				toremove.add(new Pair(id, i));
@@ -887,10 +892,11 @@ public class Outpost
 			}
 			System.err.println();
 		}*/
-		updatemap(nextlist0, 0);
-		updatemap(nextlist1, 1);
-		updatemap(nextlist2, 2);
-		updatemap(nextlist3, 3);
+		updatePoints();
+		//updatemap(nextlist0, 0);
+		//updatemap(nextlist1, 1);
+		//updatemap(nextlist2, 2);
+		//updatemap(nextlist3, 3);
 	/*	if (tick == nrounds) {
 			calculateres();
 			for (int i=0; i<4; i++) {
