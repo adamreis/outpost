@@ -21,9 +21,11 @@ public class AdvancedStrategy implements Strategy {
     static final int WATER_COLLECTOR_MAX_SIZE = 12;
     static final int BASE_DEFENSE_MIN_SIZE = 2;
 
-    static final double WATER_COLLECTOR_RATIO = 0.27;
-    static final double EARLY_OFFENSE_RATIO = 0.68;
-    static final double LATE_OFFENSE_RATIO = 0.35;
+    static final double WATER_COLLECTOR_RATIO = 0.26;
+    static final double EARLY_OFFENSE_RATIO = 0.69;
+    static final double LATE_OFFENSE_RATIO = 0.4;
+
+    double waterRatioHelper;
 
     int turn;
 
@@ -34,6 +36,8 @@ public class AdvancedStrategy implements Strategy {
         previousTurnShell = new ArrayList<Post>();
         previousTurnOffense = new ArrayList<Post>();
         previousTurnResource = new ArrayList<Post>();
+
+        waterRatioHelper = -1;
     }
 
     public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {
@@ -42,6 +46,15 @@ public class AdvancedStrategy implements Strategy {
           shellStrategy = new ShellStrategy();
           offenseStrategy = new SabotageStrategy(Player.knownID);
           resourceStrategy = new DumbQuadrantStrategy();
+        }
+
+        if (waterRatioHelper < 0) {
+          if (Player.parameters.requiredLand > 20) {
+            waterRatioHelper = 0.04;
+          }
+          else {
+            waterRatioHelper = 0.0;
+          }
         }
 
         HashMap<Location, ArrayList<Integer>> idmap = new HashMap<Location, ArrayList<Integer>>();
@@ -122,14 +135,15 @@ public class AdvancedStrategy implements Strategy {
           double numResource = resource.size();
           double total = posts.size() - BASE_DEFENSE_MIN_SIZE;
           double offenseRatio = numOffense < 14? EARLY_OFFENSE_RATIO : LATE_OFFENSE_RATIO;
-          double waterRatio = WATER_COLLECTOR_RATIO;
+          offenseRatio -= waterRatioHelper;
+          double waterRatio = WATER_COLLECTOR_RATIO + waterRatioHelper;
 
           if (numWater > WATER_COLLECTOR_MAX_SIZE) {
             offenseRatio += waterRatio / 2;
             waterRatio = 0;
           }
 
-          if (numWater / total <= WATER_COLLECTOR_RATIO) {
+          if (numWater / total <= waterRatio) {
             defense.add(p);
           }
           else if (numOffense / total <= offenseRatio) {

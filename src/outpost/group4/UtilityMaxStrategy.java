@@ -49,12 +49,12 @@ public class UtilityMaxStrategy implements Strategy {
               if (p.x == target.x && p.y == target.y) {
                 for (Post neighbor : posts) {
                   double dist = p.distanceTo(neighbor);
-                  if (dist < (double) Player.parameters.outpostRadius && p.id > neighbor.id) {
+                  if (dist < (double) Player.parameters.outpostRadius / 2 && p.id > neighbor.id) {
                     // pick a new target
                     ArrayList<GridSquare> bestWaterSquares = Player.board.getBestResourceSquaresForPost(p, valueLand);
                     int index = i;
                     GridSquare newTarget = target;
-                    while (newTarget.distanceTo(target) < Player.parameters.outpostRadius * 2.2 || path.size() <= 1) {
+                    while (newTarget.distanceTo(target) < Player.parameters.outpostRadius * 2.5 || path.size() <= 1) {
                       target = bestWaterSquares.get(index);
                       path = p.shortestPathToLocation(target);
                       index++;
