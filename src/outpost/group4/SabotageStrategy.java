@@ -31,8 +31,35 @@ public class SabotageStrategy implements Strategy {
     	}
     }
 
+    public boolean weWonBro() {
+    	for (Location enemy : this.enemyBaseLocs) {
+    		boolean foundMatch = false;
+    		for (KamikazePostPair kPair : this.kamikazes) {
+    			if (kPair.p1.distanceTo(enemy) == 0 || kPair.p2.distanceTo(enemy) == 0) {
+    				foundMatch = true;
+    				break;
+    			}
+    		}
+    		if (foundMatch) {
+    			continue;
+    		} else {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+    
     public int delete(ArrayList<Post> posts) {
-		return -1;
+    	int closestToUs = -1;
+    	double distToUs = Double.MAX_VALUE;
+    	
+		for (int j = 0; j < posts.size(); j++) {
+			if (posts.get(j).distanceTo(this.homeBase) < distToUs) {
+				closestToUs = j;
+				distToUs = posts.get(j).distanceTo(this.homeBase);
+			}
+		}
+		return closestToUs;
 	}
 
     private ArrayList<Integer> uncoveredEnemyOutpostIds() {

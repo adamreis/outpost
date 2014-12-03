@@ -84,7 +84,7 @@ public class UtilityMaxStrategy implements Strategy {
             newPost.y = path.get(nextLocationIndex).y;
 
             if (fresh) {
-              System.out.printf("OLD %s NEW %s\n", p, newPost);
+              //System.out.printf("OLD %s NEW %s\n", p, newPost);
             }
 
             if (newTargetMap.get(newPost) == null) {

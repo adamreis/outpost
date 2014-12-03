@@ -6,20 +6,21 @@ public class AdvancedStrategy implements Strategy {
 
     Strategy defenseStrategy;
     Strategy shellStrategy;
-    Strategy offenseStrategy;
+    SabotageStrategy offenseStrategy;
     Strategy resourceStrategy;
 
     ArrayList<Post> previousTurnDefense;
     ArrayList<Post> previousTurnShell;
     ArrayList<Post> previousTurnOffense;
     ArrayList<Post> previousTurnResource;
+    ArrayList<Post> trash;
 
     HashSet<Location> controlledLand;
     HashSet<Location> controlledWater;
 
     static final int WATER_COLLECTOR_MIN_SIZE = 3;
-    static final int WATER_COLLECTOR_MAX_SIZE = 12;
-    static final int OFFENSE_FIRST_PAIR_MIN_SIZE = 2;
+    static final int WATER_COLLECTOR_MAX_SIZE = 13;
+    static final int OFFENSE_FIRST_PAIR_MIN_SIZE = 0;
     static final int BASE_DEFENSE_MIN_SIZE = 2;
 
     static final double WATER_COLLECTOR_RATIO = 0.26;
@@ -37,6 +38,7 @@ public class AdvancedStrategy implements Strategy {
         previousTurnShell = new ArrayList<Post>();
         previousTurnOffense = new ArrayList<Post>();
         previousTurnResource = new ArrayList<Post>();
+        trash = new ArrayList<Post>();
 
         waterRatioHelper = -1;
     }
@@ -44,26 +46,22 @@ public class AdvancedStrategy implements Strategy {
     public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {
         if (defenseStrategy == null && offenseStrategy == null) {
           defenseStrategy = new UtilityMaxStrategy(false);
-          shellStrategy = new ShellStrategy();
+          shellStrategy = new AdamShellStrategy(Player.knownID);
           offenseStrategy = new SabotageStrategy(Player.knownID);
           resourceStrategy = new DumbQuadrantStrategy();
         }
 
         if (waterRatioHelper < 0) {
           if (Player.parameters.requiredLand > 20) {
-            waterRatioHelper = 0.055;
+            waterRatioHelper = 0.09;
           }
           else {
             waterRatioHelper = 0.0;
           }
         }
-
-        HashMap<Location, ArrayList<Integer>> idmap = new HashMap<Location, ArrayList<Integer>>();
-        for (int i = 0; i < posts.size(); i++) {
-        	Post p = posts.get(i);
-        	if (idmap.get(p) == null) idmap.put(p, new ArrayList<Integer>());
-        	ArrayList<Integer> ids = idmap.get(p);
-        	ids.add(i);
+        
+        if (offenseStrategy.weWonBro()) {
+        	return posts;
         }
 
         turn += 1;
@@ -80,7 +78,7 @@ public class AdvancedStrategy implements Strategy {
 
         int landCount = controlledLand.size();
         int waterCount = controlledWater.size();
-        int potentialOutposts = Player.parameters.outpostsSupportedWithResources(landCount, waterCount);
+        //int potentialOutposts = Player.parameters.outpostsSupportedWithResources(landCount, waterCount);
 
         ArrayList<Post> defense = new ArrayList<Post>();
         ArrayList<Post> shell = new ArrayList<Post>();
@@ -112,7 +110,18 @@ public class AdvancedStrategy implements Strategy {
             unassigned.add(p);
           }
         }
-
+        
+        while (defense.size() < WATER_COLLECTOR_MIN_SIZE && shell.size() > 0) {
+        	Post p = shell.get(0);
+        	shell.remove(p);
+        	defense.add(p);
+        } 
+        while (defense.size() < WATER_COLLECTOR_MIN_SIZE && resource.size() > 0) {
+        	Post p = resource.get(0);
+        	resource.remove(p);
+        	defense.add(p);
+        }
+        
         //System.out.printf("turn %d unassigned size %d\n", turn, unassigned.size());
 
         // assign some unassigned posts to water and base
@@ -134,10 +143,10 @@ public class AdvancedStrategy implements Strategy {
 
         // assign rest based on ratios
         for (Post p : veryUnassigned) {
-          double numWater = defense.size();
+          double numWater = Math.max(defense.size() - WATER_COLLECTOR_MIN_SIZE, 0);
           double numOffense = offense.size();
           double numResource = resource.size();
-          double total = posts.size() - BASE_DEFENSE_MIN_SIZE;
+          double total = posts.size() - BASE_DEFENSE_MIN_SIZE - WATER_COLLECTOR_MIN_SIZE;
           double offenseRatio = numOffense < 14? EARLY_OFFENSE_RATIO : LATE_OFFENSE_RATIO;
           offenseRatio -= waterRatioHelper;
           double waterRatio = WATER_COLLECTOR_RATIO + waterRatioHelper;
@@ -157,10 +166,10 @@ public class AdvancedStrategy implements Strategy {
             resource.add(p);
           }
 
-          System.out.printf("water %f offense %f resource %f total %f\n", numWater, numOffense, numResource, total);
+          //System.out.printf("water %f offense %f resource %f total %f\n", numWater, numOffense, numResource, total);
         }
 
-        //System.out.printf("turn %d defense %d shell %d offense %d\n", turn, defense.size(), shell.size(), offense.size());
+        System.out.printf("turn %d defense %d shell %d offense %d\n", turn, defense.size(), shell.size(), offense.size());
 
 //        System.out.println("Offense we are giving:");
 //        for (Post p : offense) System.out.println(p);
@@ -197,6 +206,14 @@ public class AdvancedStrategy implements Strategy {
     }
 
     public int delete(ArrayList<Post> posts) {
+      // delete trash
+      for (int i = 0; i < posts.size(); i++) {
+    	  Post p = posts.get(i);
+    	  if (p.x == Player.baseLoc.x && p.y == Player.baseLoc.y) {
+    		  return i;
+    	  }
+      }
+    	
       // delete a shell if possible
       for (int i = 0; i < posts.size(); i++) {
         Post p = posts.get(i);
@@ -204,14 +221,24 @@ public class AdvancedStrategy implements Strategy {
             return i;
         }
       }
-
+      
       // delete an offense if possible
-      for (int i = 0; i < posts.size(); i++) {
-        Post p = posts.get(i);
-        if (previousTurnOffense.contains(p)) {
-          return i;
-        }
+      int offDelIdx = offenseStrategy.delete(previousTurnOffense);
+      if (offDelIdx >= 0) {
+    	  Post p = previousTurnOffense.get(offDelIdx);
+    	  int i = posts.indexOf(p);
+    	  if (i >= 0) {
+    		  return i;
+    	  }
       }
+      
+      // delete a land resource if possible
+      for (int i = 0; i < posts.size(); i++) {
+          Post p = posts.get(i);
+          if (previousTurnResource.contains(p)) {
+              return i;
+          }
+        }
 
       // at this point anything is bad
       return Player.random.nextInt(posts.size());
