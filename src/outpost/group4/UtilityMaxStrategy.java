@@ -42,7 +42,7 @@ public class UtilityMaxStrategy implements Strategy {
                   double dist = p.distanceTo(neighbor);
                   if (dist < (double) Player.parameters.outpostRadius && p.id > neighbor.id) {
                     // pick a new target
-                    ArrayList<GridSquare> bestWaterSquares = Player.board.getBestWaterSquaresForPost(p);
+                    ArrayList<GridSquare> bestWaterSquares = Player.board.getBestResourceSquaresForPost(p, false);
                     postTargets.set(squareIndex, bestWaterSquares.get(2 * squareIndex));
                   }
                 }
@@ -54,7 +54,7 @@ public class UtilityMaxStrategy implements Strategy {
 
             // if we do not have a target, grab a new one and move toward it
             else {
-              ArrayList<GridSquare> bestWaterSquares = Player.board.getBestWaterSquaresForPost(p);
+              ArrayList<GridSquare> bestWaterSquares = Player.board.getBestResourceSquaresForPost(p, false);
               GridSquare target = bestWaterSquares.get(squareIndex);
               postTargets.add(target);
               path = p.shortestPathToLocation(target);

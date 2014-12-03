@@ -48,7 +48,7 @@ public class GameParameters {
 				double ratio = landCells / (double) waterCells;
 				boolean waterIsLimiting = ratio >= landWaterRatio();
 				int cellsPossible = waterIsLimiting? waterCells / this.requiredWater : landCells / this.requiredLand;
-				return cellsPossible + 1; // that (n - 1) formula
+				return cellsPossible;
 		}
 
 }

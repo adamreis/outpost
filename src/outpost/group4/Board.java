@@ -153,25 +153,31 @@ public class Board {
      * if a water square is owned by another of our posts, it is worth 0
      * if a water square is unowned by us, it is worth 1
      */
-    public int waterScoreForPost(GridSquare square, ArrayList<GridSquare> postSquares) {
-        int score = 0;
+    public double resourceScoreForPost(GridSquare square, ArrayList<GridSquare> postSquares, boolean valueLand) {
+        // blast water score cause we really care about water
+        double waterValue = 1.0;
+        double landValue = valueLand? 0.25 : 0.0;
+
+        double score = 0;
 
         for (GridSquare gs : squaresWithinRadius(square)) {
-            // if square is land, discount
-            if (!gs.water) {
-                continue;
-            }
+            double squareValue = (gs.water)? waterValue : landValue;
+
             // if the post owns the square, consider it a good thing
-            else if (postSquares.contains(gs)) {
-                score += 1;
+            if (postSquares.contains(gs)) {
+                score += squareValue;
             }
-            // if another post owns the square, discount
+            // if another of our posts owns the square, discount
             else if (weOwnLocation(gs)) {
                 continue;
             }
+            // if someone else owns the square, discount
+            // else if (square.owners.size() > 0) {
+            //     continue;
+            // }
             // otherwise, we go for it
             else {
-                score += 1;
+                score += squareValue;
             }
         }
         return score;
@@ -179,24 +185,26 @@ public class Board {
 
     /**
      * returns a sorted list of the best water squares *for* a given post, based
-     * on the score returned by the waterScoreForPost method.
+     * on the score returned by the ResourceScoreForPost method.
      * Weighted by distance by subtracting .5 * distance from post to square from
      * the water score. This heuristic was determined via trial and error and is
      * open to being changed.
      */
-    public ArrayList<GridSquare> getBestWaterSquaresForPost(Post post) {
+    public ArrayList<GridSquare> getBestResourceSquaresForPost(Post post, boolean valueLand) {
         ArrayList<GridSquare> waterSquaresForPost = getGridSquaresList(true);
         final ArrayList<GridSquare> postSquares = squaresWithinRadius(post);
         final Post relevantPost = post;
+        final boolean shouldValueLand = valueLand;
+        final double distanceWeight = -0.65;
 
         // sort by water score
         Collections.sort(waterSquaresForPost, new Comparator<GridSquare>() {
             public int compare(GridSquare one, GridSquare other) {
-                double oneWaterScore   = waterScoreForPost(one, postSquares) - (.5 * relevantPost.distanceTo(one));
-                double otherWaterScore = waterScoreForPost(other, postSquares) - (.5 * relevantPost.distanceTo(other));
-                if (oneWaterScore < otherWaterScore)
+                double oneResourceScore   = resourceScoreForPost(one, postSquares, shouldValueLand) + (distanceWeight * relevantPost.distanceTo(one));
+                double otherResourceScore = resourceScoreForPost(other, postSquares, shouldValueLand) + (distanceWeight * relevantPost.distanceTo(other));
+                if (oneResourceScore < otherResourceScore)
                     return 1;
-                else if (oneWaterScore == otherWaterScore)
+                else if (oneResourceScore == otherResourceScore)
                     return 0;
                 else
                     return -1;

@@ -12,8 +12,11 @@ public class AdvancedStrategy implements Strategy {
     HashSet<Post> previousTurnShell;
     HashSet<Post> previousTurnOffense;
 
-    int DEFENSE_SIZE = 8;
-    int SHELL_SIZE = 2;
+    HashSet<Location> controlledLand;
+    HashSet<Location> controlledWater;
+
+    static final int RESOURCE_SIZE = 8;
+    static final int BASE_DEFENSE_SIZE = 2;
 
     int turn;
 
@@ -33,6 +36,20 @@ public class AdvancedStrategy implements Strategy {
         }
 
         turn += 1;
+
+        controlledLand = new HashSet<Location>();
+        controlledWater = new HashSet<Location>();
+        for (Post p : posts) {
+            ArrayList<GridSquare> controlledSquares = Player.board.squaresWithinRadius(p);
+            for (GridSquare square : controlledSquares) {
+                if (square.water) controlledWater.add(square);
+                else controlledLand.add(square);
+            }
+        }
+
+        int landCount = controlledLand.size();
+        int waterCount = controlledWater.size();
+        int potentialOutposts = Player.parameters.outpostsSupportedWithResources(landCount, waterCount);
 
         ArrayList<Post> defense = new ArrayList<Post>();
         ArrayList<Post> shell = new ArrayList<Post>();
@@ -63,10 +80,10 @@ public class AdvancedStrategy implements Strategy {
 
         // deal with unassigned posts
         for (Post p : unassigned) {
-          if (defense.size() < DEFENSE_SIZE) {
+          if (defense.size() < RESOURCE_SIZE) {
             defense.add(p);
           }
-          else if (shell.size() < SHELL_SIZE) {
+          else if (shell.size() < BASE_DEFENSE_SIZE) {
             shell.add(p);
           }
           else {
