@@ -150,7 +150,7 @@ public class KamikazePostPair {
 //	}
 	
 	private void moveApart(Location targetLoc, Location targetBase) {
-		ArrayList<Location> sPath = this.p1.shortestPathToLocation(targetBase); 
+		ArrayList<Location> sPath = this.p1.shortestPathToLocation(targetLoc); 
 		Location towardBase;
 		if (sPath.size() > 1) {
 			 towardBase = sPath.get(1);
@@ -169,7 +169,7 @@ public class KamikazePostPair {
 	
 	private void moveTowardLocation(Location targetLoc, Location targetBase) {
 //		System.out.println("moveTowardLocation called");
-		ArrayList<Location> sPath = this.p1.shortestPathToLocation(targetBase); 
+		ArrayList<Location> sPath = this.p1.shortestPathToLocation(targetLoc); 
 		Location towardBase;
 		if (sPath.size() > 1) {
 			 towardBase = sPath.get(1);
