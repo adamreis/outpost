@@ -67,8 +67,8 @@ public class SabotageStrategy implements Strategy {
     	}
 
     	Random r = new Random();
-		int randIndex = r.nextInt(uncoveredBases.size());
-		return uncoveredBases.get(randIndex);
+			int randIndex = r.nextInt(uncoveredBases.size());
+			return uncoveredBases.get(randIndex);
     }
 
 	public ArrayList<Post> move(ArrayList<ArrayList<Post>> otherPlayerPosts, ArrayList<Post> posts, boolean newSeason) {

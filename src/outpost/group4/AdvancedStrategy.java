@@ -18,11 +18,12 @@ public class AdvancedStrategy implements Strategy {
     HashSet<Location> controlledWater;
 
     static final int WATER_COLLECTOR_MIN_SIZE = 3;
+    static final int WATER_COLLECTOR_MAX_SIZE = 12;
     static final int BASE_DEFENSE_MIN_SIZE = 2;
 
-    static final double WATER_COLLECTOR_RATIO = 0.25;
-    static final double EARLY_OFFENSE_RATIO = 0.7;
-    static final double LATE_OFFENSE_RATIO = 0.44;
+    static final double WATER_COLLECTOR_RATIO = 0.27;
+    static final double EARLY_OFFENSE_RATIO = 0.68;
+    static final double LATE_OFFENSE_RATIO = 0.35;
 
     int turn;
 
@@ -120,7 +121,13 @@ public class AdvancedStrategy implements Strategy {
           double numOffense = offense.size();
           double numResource = resource.size();
           double total = posts.size() - BASE_DEFENSE_MIN_SIZE;
-          double offenseRatio = numOffense < 40? EARLY_OFFENSE_RATIO : LATE_OFFENSE_RATIO;
+          double offenseRatio = numOffense < 14? EARLY_OFFENSE_RATIO : LATE_OFFENSE_RATIO;
+          double waterRatio = WATER_COLLECTOR_RATIO;
+
+          if (numWater > WATER_COLLECTOR_MAX_SIZE) {
+            offenseRatio += waterRatio / 2;
+            waterRatio = 0;
+          }
 
           if (numWater / total <= WATER_COLLECTOR_RATIO) {
             defense.add(p);
@@ -135,7 +142,7 @@ public class AdvancedStrategy implements Strategy {
           System.out.printf("water %f offense %f resource %f total %f\n", numWater, numOffense, numResource, total);
         }
 
-        System.out.printf("turn %d defense %d shell %d offense %d\n", turn, defense.size(), shell.size(), offense.size());
+        //System.out.printf("turn %d defense %d shell %d offense %d\n", turn, defense.size(), shell.size(), offense.size());
 
 //        System.out.println("Offense we are giving:");
 //        for (Post p : offense) System.out.println(p);
